@@ -1,129 +1,90 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
+import GridCell from "./GridCell";
+import GridControls from "./GridControls";
 import styles from "./Grid.module.css";
 
 interface GridProps {
   size: number;
-  onIntersectionUpdate: (intersections: string[]) => void;
+  clickedLines: Set<string>;
   onClickedLinesUpdate: (clickedLines: Set<string>) => void;
 }
 
 const Grid: React.FC<GridProps> = ({
   size,
-  onIntersectionUpdate,
+  clickedLines,
   onClickedLinesUpdate,
 }) => {
-  const [clickedLines, setClickedLines] = useState<Set<string>>(new Set());
   const [hoverCell, setHoverCell] = useState<{
     row: number;
     col: number;
   } | null>(null);
   const [isVerticalHover, setIsVerticalHover] = useState(false);
+  const [isGridSelected, setIsGridSelected] = useState(false);
 
-  const handleCellClick = (row: number, col: number) => {
-    if (hoverCell) {
-      setClickedLines((prev) => {
-        const newSet = new Set(prev);
-        const lineKey = isVerticalHover ? `col-${col}` : `row-${row}`;
-        if (newSet.has(lineKey)) {
-          newSet.delete(lineKey);
-        } else {
-          newSet.add(lineKey);
-        }
-        return newSet;
-      });
-    }
-  };
-
-  const handleMouseEnter = (row: number, col: number) => {
-    setHoverCell({ row, col });
-  };
-
-  const handleMouseLeave = () => {
-    setHoverCell(null);
-  };
+  const handleCellClick = useCallback(
+    (row: number, col: number) => {
+      if (hoverCell) {
+        onClickedLinesUpdate((prev) => {
+          const newSet = new Set(prev);
+          const lineKey = isVerticalHover ? `col-${col}` : `row-${row}`;
+          if (newSet.has(lineKey)) {
+            newSet.delete(lineKey);
+          } else {
+            newSet.add(lineKey);
+          }
+          return newSet;
+        });
+      }
+    },
+    [hoverCell, isVerticalHover, onClickedLinesUpdate]
+  );
 
   const toggleHoverOrientation = useCallback(() => {
     setIsVerticalHover((prev) => !prev);
   }, []);
 
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "r") {
-        toggleHoverOrientation();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    window.addEventListener("wheel", toggleHoverOrientation);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-      window.removeEventListener("wheel", toggleHoverOrientation);
-    };
-  }, [toggleHoverOrientation]);
-
-  const intersections = useMemo(() => {
-    const result: string[] = [];
-    const rows = new Set();
-    const cols = new Set();
-
-    clickedLines.forEach((line) => {
-      const [type, index] = line.split("-");
-      if (type === "row") {
-        rows.add(index);
-      } else {
-        cols.add(index);
-      }
-    });
-
-    rows.forEach((row) => {
-      cols.forEach((col) => {
-        result.push(`(${row},${col})`);
-      });
-    });
-
-    return result;
-  }, [clickedLines]);
-
-  useEffect(() => {
-    onIntersectionUpdate(intersections);
-  }, [intersections, onIntersectionUpdate]);
-
-  useEffect(() => {
-    onClickedLinesUpdate(clickedLines);
-  }, [clickedLines, onClickedLinesUpdate]);
+  const handleGridMouseEnter = () => setIsGridSelected(true);
+  const handleGridMouseLeave = () => setIsGridSelected(false);
 
   return (
-    <div className={styles.grid}>
-      {Array.from({ length: size }, (_, row) => (
-        <div key={row} className={styles.row}>
-          {Array.from({ length: size }, (_, col) => (
-            <div
-              key={`${row}-${col}`}
-              className={`${styles.cell} 
-                ${
-                  clickedLines.has(`row-${row}`) ||
-                  clickedLines.has(`col-${col}`)
-                    ? styles.clicked
-                    : ""
-                }
-                ${
-                  isVerticalHover && col === hoverCell?.col
-                    ? styles.hoverVertical
-                    : ""
-                }
-                ${
-                  !isVerticalHover && row === hoverCell?.row
-                    ? styles.hoverHorizontal
-                    : ""
-                }`}
-              onClick={() => handleCellClick(row, col)}
-              onMouseEnter={() => handleMouseEnter(row, col)}
-              onMouseLeave={handleMouseLeave}
-            />
-          ))}
-        </div>
-      ))}
+    <div
+      onMouseEnter={handleGridMouseEnter}
+      onMouseLeave={handleGridMouseLeave}
+      className={styles.gridContainer}
+    >
+      <GridControls
+        onToggleHoverOrientation={toggleHoverOrientation}
+        isGridSelected={isGridSelected}
+      />
+      <div className={styles.grid}>
+        {Array.from({ length: size }, (_, index) => {
+          const row = size - 1 - index;
+          return (
+            <div key={row} className={styles.row}>
+              {Array.from({ length: size }, (_, col) => (
+                <GridCell
+                  key={`${row}-${col}`}
+                  row={row}
+                  col={col}
+                  isClicked={
+                    clickedLines.has(`row-${row}`) ||
+                    clickedLines.has(`col-${col}`)
+                  }
+                  isHovered={
+                    isVerticalHover
+                      ? col === hoverCell?.col
+                      : row === hoverCell?.row
+                  }
+                  isVerticalHover={isVerticalHover}
+                  onClick={handleCellClick}
+                  onMouseEnter={(cell) => setHoverCell({ ...cell, row: row })}
+                  onMouseLeave={() => setHoverCell(null)}
+                />
+              ))}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

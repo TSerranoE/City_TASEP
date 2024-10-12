@@ -1,5 +1,5 @@
 import React from "react";
-import TripleToggleSwitch from "./TripleToggleSwitch"; // Asegúrate de que esta ruta sea correcta
+import TripleToggleSwitch from ".TripleToggleSwitch"; // Asegúrate de que esta ruta sea correcta
 
 const Switch: React.FC = () => {
   const labels = {

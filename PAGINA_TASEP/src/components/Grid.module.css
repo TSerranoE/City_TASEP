@@ -1,3 +1,7 @@
+.gridContainer {
+  display: inline-block;
+  outline: none;
+}
 .grid {
   display: inline-block;
   background-color: #f0f0f0;
