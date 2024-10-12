@@ -1,38 +1,73 @@
-import { useState } from "react";
-import negro from "./assets/auto_negro.svg";
-import azul from "/auto_azul.svg";
-import "./App.css";
+import { useState, useMemo } from "react";
+import Grid from "./components/Grid";
+import Button from "./components/Button";
+import styles from "./App.module.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [clickedLines, setClickedLines] = useState<Set<string>>(new Set());
+  const [intersections, setIntersections] = useState<string[]>([]);
+  const [showIntersections, setShowIntersections] = useState(false);
+  const [showExtremePoints, setShowExtremePoints] = useState(false);
+
+  const handleIntersectionUpdate = (newIntersections: string[]) => {
+    setIntersections(newIntersections);
+  };
+
+  const toggleIntersections = () => {
+    setShowIntersections(!showIntersections);
+    setShowExtremePoints(false);
+  };
+
+  const toggleExtremePoints = () => {
+    setShowExtremePoints(!showExtremePoints);
+    setShowIntersections(false);
+  };
+
+  const extremePoints = useMemo(() => {
+    const points: string[] = [];
+    clickedLines.forEach((line) => {
+      const [type, index] = line.split("-");
+      if (type === "row") {
+        points.push(`(${index},0)`, `(${index},49)`);
+      } else {
+        points.push(`(0,${index})`, `(49,${index})`);
+      }
+    });
+    return points;
+  }, [clickedLines]);
 
   return (
-    <>
-      <div>
-        <img src={azul} className="logo" alt="Vite logo" />
-        <img src={negro} className="logo react" alt="React logo" />
+    <div className={styles.app}>
+      <h1 className={styles.title}>City Tasep</h1>
+      <Grid
+        size={50}
+        onIntersectionUpdate={handleIntersectionUpdate}
+        onClickedLinesUpdate={setClickedLines}
+      />
+      <p className={styles.instructions}>
+        Scroll or press 'r' to rotate the hover effect
+      </p>
+      <div className={styles.buttonContainer}>
+        <Button onClick={toggleIntersections}>
+          {showIntersections ? "Hide Intersections" : "Show Intersections"}
+        </Button>
+        <Button onClick={toggleExtremePoints}>
+          {showExtremePoints ? "Hide Extreme Points" : "Show Extreme Points"}
+        </Button>
       </div>
-      <h1>City Tasep</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>Me falta importar todo jaja</p>
-        <p>
-          Importante, los archivos importantes estan todos en src excepto el del
-          backend que es app.py por ahora
-        </p>
-        <p>
-          En assets van las imagenes, en components van los componentes de
-          react, en el siguiente formato comoponente.tsx componente.css
-        </p>
-        <p>El otro importante es App.tsx</p>
-        <p>
-          Si quieren cachar algo basta con conocimientos de HTML, Javascript,
-          CSS y React
-        </p>
-      </div>
-    </>
+      {showIntersections && intersections.length > 0 && (
+        <div className={styles.dataDisplay}>
+          <h2>Intersections:</h2>
+          <p>{intersections.join(", ")}</p>
+        </div>
+      )}
+      {showExtremePoints && extremePoints.length > 0 && (
+        <div className={styles.dataDisplay}>
+          <h2>Extreme Points:</h2>
+          <p>{extremePoints.join(", ")}</p>
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -1,0 +1,27 @@
+.grid {
+  display: inline-block;
+  background-color: #f0f0f0;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 15px;
+  height: 15px;
+}
+
+.cell.clicked {
+  background-color: #000;
+}
+
+.cell.hoverHorizontal,
+.cell.hoverVertical {
+  background-color: #808080;
+}
+
+.clicked.hoverHorizontal,
+.clicked.hoverVertical {
+  background-color: #404040;
+}
