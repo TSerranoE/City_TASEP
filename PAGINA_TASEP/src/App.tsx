@@ -35,9 +35,7 @@ function App() {
         clickedLines={clickedLines}
         onClickedLinesUpdate={setClickedLines}
       />
-      <p className={styles.instructions}>
-        Scroll or press 'r' to rotate the hover effect
-      </p>
+      <p className={styles.instructions}>Scroll or press 'r' to rotate</p>
       <ControlPanel
         showIntersections={showIntersections}
         showExtremePoints={showExtremePoints}
