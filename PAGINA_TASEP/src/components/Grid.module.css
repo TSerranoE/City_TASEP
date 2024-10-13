@@ -8,6 +8,7 @@
 .gridWrapper {
   display: inline-block;
   outline: none;
+  position: relative;
 }
 
 .grid {
@@ -22,6 +23,7 @@
 .cell {
   width: 15px;
   height: 15px;
+  box-sizing: border-box;
 }
 
 .cell.clicked {

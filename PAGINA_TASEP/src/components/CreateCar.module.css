@@ -1,6 +1,12 @@
-.carContainer {
+.car {
   position: absolute;
-  pointer-events: none;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  transform: translate(0%, -45%);
 }
 
 .carImage {

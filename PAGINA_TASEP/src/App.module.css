@@ -41,3 +41,17 @@
   font-size: 1rem;
   color: #666;
 }
+
+.gridContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  width: 100%;
+}
