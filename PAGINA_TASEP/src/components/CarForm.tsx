@@ -31,24 +31,24 @@ const CarForm: React.FC<CarFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
-        <label htmlFor="row">Row</label>
-        <input
-          type="number"
-          id="row"
-          value={row}
-          onChange={(e) => setRow(e.target.value)}
-          required
-          min="0"
-          max={gridSize - 1}
-        />
-      </div>
-      <div className={styles.formGroup}>
         <label htmlFor="col">Column</label>
         <input
           type="number"
           id="col"
           value={col}
           onChange={(e) => setCol(e.target.value)}
+          required
+          min="0"
+          max={gridSize - 1}
+        />
+      </div>
+      <div className={styles.formGroup}>
+        <label htmlFor="row">Row</label>
+        <input
+          type="number"
+          id="row"
+          value={row}
+          onChange={(e) => setRow(e.target.value)}
           required
           min="0"
           max={gridSize - 1}

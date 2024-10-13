@@ -5,25 +5,31 @@ import DataDisplay from "./components/DataDisplay";
 import CarForm from "./components/CarForm";
 import CreateCar from "./components/CreateCar";
 import MoveCarForm from "./components/MoveCarForm";
-import { carImages } from "./components/CreateCar";
 import {
   calculateIntersections,
-  calculateExtremePoints,
+  calculateRowAndCols,
 } from "./utils/gridCalculations";
 import styles from "./App.module.css";
+import StartButton from "./components/StartButton";
 
 function App() {
   const size = 50;
   const [clickedLines, setClickedLines] = useState<Set<string>>(new Set());
   const [showIntersections, setShowIntersections] = useState(false);
-  const [showExtremePoints, setShowExtremePoints] = useState(false);
+  const [showRowAndCols, setShowRowAndCols] = useState(false);
   const [cars, setCars] = useState<
-    Array<{ row: number; col: number; color: string; id: string }>
+    Array<{
+      row: number;
+      col: number;
+      color: string;
+      id: string;
+    }>
   >([]);
   const [nextCarId, setNextCarId] = useState(1);
+  const [isActive, setIsActive] = useState(false);
 
   const intersections = calculateIntersections(clickedLines);
-  const extremePoints = calculateExtremePoints(clickedLines, size);
+  const { rowAndCols, calles } = calculateRowAndCols(clickedLines);
 
   useEffect(() => {
     const sendDataToBackend = async () => {
@@ -35,7 +41,7 @@ function App() {
           },
           body: JSON.stringify({
             intersections: Array.from(intersections),
-            extremePoints: Array.from(extremePoints),
+            calles: Array.from(calles),
             size,
           }),
         });
@@ -47,7 +53,7 @@ function App() {
     };
 
     sendDataToBackend();
-  }, [intersections, extremePoints, size]);
+  }, [isActive]);
 
   useEffect(() => {
     const fetchState = async () => {
@@ -66,11 +72,11 @@ function App() {
   }, []);
   const toggleIntersections = () => {
     setShowIntersections(!showIntersections);
-    setShowExtremePoints(false);
+    setShowRowAndCols(false);
   };
 
-  const toggleExtremePoints = () => {
-    setShowExtremePoints(!showExtremePoints);
+  const toggleRowAndCols = () => {
+    setShowRowAndCols(!showRowAndCols);
     setShowIntersections(false);
   };
 
@@ -83,7 +89,7 @@ function App() {
   const handleAddCar = (
     row: number,
     col: number,
-    color: keyof typeof carImages,
+    color: string,
     id: string
   ) => {
     setCars((prevCars) => [...prevCars, { row, col, color, id }]);
@@ -97,38 +103,46 @@ function App() {
     );
   };
 
+  const toggleActive = () => setIsActive((prev) => !prev);
+
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>City Tasep</h1>
+
       <div className={styles.gridContainer}>
-        <Grid
-          size={size}
-          clickedLines={clickedLines}
-          onClickedLinesUpdate={setClickedLines}
-        />
-        {cars.map((car) => (
-          <CreateCar
-            key={car.id}
-            position={{ col: car.col, row: car.row }}
-            color={car.color}
-            id={car.id}
-            gridSize={size}
+        <StartButton onClick={toggleActive} isActive={isActive} />
+        <div className={styles.carContainer}>
+          <Grid
+            size={size}
+            clickedLines={clickedLines}
+            onClickedLinesUpdate={setClickedLines}
+            isActive={isActive}
           />
-        ))}
+          {cars.map((car) => (
+            <CreateCar
+              key={car.id}
+              position={{ col: car.col, row: car.row }}
+              color={car.color}
+              id={car.id}
+              gridSize={size}
+            />
+          ))}
+        </div>
       </div>
+
       <p className={styles.instructions}>Scroll or press 'r' to rotate</p>
       <ControlPanel
         showIntersections={showIntersections}
-        showExtremePoints={showExtremePoints}
+        showRowAndCols={showRowAndCols}
         onToggleIntersections={toggleIntersections}
-        onToggleExtremePoints={toggleExtremePoints}
+        onToggleRowAndCols={toggleRowAndCols}
       />
 
       <DataDisplay
         showIntersections={showIntersections}
-        showExtremePoints={showExtremePoints}
+        showRowAndCols={showRowAndCols}
         intersections={intersections}
-        extremePoints={extremePoints}
+        rowAndCols={rowAndCols}
       />
       <div className={styles.formContainer}>
         <CarForm

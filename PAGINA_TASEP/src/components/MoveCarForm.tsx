@@ -32,24 +32,24 @@ const MoveCarForm: React.FC<MoveCarFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
-        <label htmlFor="newRow">New Row</label>
-        <input
-          type="number"
-          id="newRow"
-          value={newRow}
-          onChange={(e) => setNewRow(e.target.value)}
-          required
-          min="0"
-          max={gridSize - 1}
-        />
-      </div>
-      <div className={styles.formGroup}>
         <label htmlFor="newCol">New Column</label>
         <input
           type="number"
           id="newCol"
           value={newCol}
           onChange={(e) => setNewCol(e.target.value)}
+          required
+          min="0"
+          max={gridSize - 1}
+        />
+      </div>
+      <div className={styles.formGroup}>
+        <label htmlFor="newRow">New Row</label>
+        <input
+          type="number"
+          id="newRow"
+          value={newRow}
+          onChange={(e) => setNewRow(e.target.value)}
           required
           min="0"
           max={gridSize - 1}

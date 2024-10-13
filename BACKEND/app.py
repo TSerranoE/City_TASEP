@@ -4,6 +4,13 @@ import time
 import threading
 app = Flask(__name__)
 CORS(app)
+from Calle import Calle
+from Interseccion import Interseccion
+from Particula import Particula
+from Calles import Calles
+
+
+calles = Calles([])
 
 # def run_simulation():
 #     while True:
@@ -20,13 +27,15 @@ CORS(app)
 @app.route('/update_data', methods=['POST'])
 def update_data():
     data = request.json
-    intersections = data['intersections']
+    #intersections = data['intersections']
     extreme_points = data['extremePoints']
-    size = data['size']
-    
-    # Aquí puedes procesar los datos como necesites
-    print(f"Received data: Intersections: {intersections}, Extreme Points: {extreme_points}, Size: {size}")
-    
+    #size = data['size']
+    for extreme_point in extreme_points:
+        direccion , posicion =    extreme_point.split(";")
+        print(direccion, posicion)
+        calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
+        calles.add_calle(calle)
+    calles.update_intersecciones()
     return jsonify({"status": "success", "message": "Data received successfully"})
 
 @app.route('/state', methods=['GET'])

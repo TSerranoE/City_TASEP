@@ -14,27 +14,29 @@ export const calculateIntersections = (clickedLines: Set<string>): string[] => {
 
   rows.forEach((row) => {
     cols.forEach((col) => {
-      result.push(`(${row},${col})`);
+      result.push(`(${col}, ${row})`);
     });
   });
 
   return result;
 };
 
-export const calculateExtremePoints = (
-  clickedLines: Set<string>,
-  size: number
-): string[] => {
-  const points: string[] = [];
-  const maxIndex = size - 1;
+export const calculateRowAndCols = (
+  clickedLines: Set<string>
+): { rowAndCols: string[]; calles: string[] } => {
+  const calles: string[] = [];
+  const rowAndCols: string[] = [];
 
   clickedLines.forEach((line) => {
     const [type, index] = line.split("-");
     if (type === "row") {
-      points.push(`(fila,(0,${index}),(${maxIndex},${index}))`);
+      calles.push(`0;${index}`);
+      rowAndCols.push(`row ${index}`);
     } else {
-      points.push(`(columna,(${index},0),(${index},${maxIndex}))`);
+      calles.push(`1:${index}`);
+      rowAndCols.push(`col ${index}`);
     }
   });
-  return points;
+
+  return { rowAndCols, calles };
 };

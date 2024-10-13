@@ -3,24 +3,24 @@ import Button from "./Button";
 
 interface ControlPanelProps {
   showIntersections: boolean;
-  showExtremePoints: boolean;
+  showRowAndCols: boolean;
   onToggleIntersections: () => void;
-  onToggleExtremePoints: () => void;
+  onToggleRowAndCols: () => void;
 }
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
   showIntersections,
-  showExtremePoints,
+  showRowAndCols,
   onToggleIntersections,
-  onToggleExtremePoints,
+  onToggleRowAndCols,
 }) => {
   return (
     <div>
       <Button onClick={onToggleIntersections}>
         {showIntersections ? "Hide Intersections" : "Show Intersections"}
       </Button>
-      <Button onClick={onToggleExtremePoints}>
-        {showExtremePoints ? "Hide Extreme Points" : "Show Extreme Points"}
+      <Button onClick={onToggleRowAndCols}>
+        {showRowAndCols ? "Hide Columns and Rows" : "Show Columns and Rows"}
       </Button>
     </div>
   );

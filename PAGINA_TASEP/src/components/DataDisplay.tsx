@@ -2,16 +2,16 @@ import React from "react";
 
 interface DataDisplayProps {
   showIntersections: boolean;
-  showExtremePoints: boolean;
+  showRowAndCols: boolean;
   intersections: string[];
-  extremePoints: string[];
+  rowAndCols: string[];
 }
 
 const DataDisplay: React.FC<DataDisplayProps> = ({
   showIntersections,
-  showExtremePoints,
+  showRowAndCols,
   intersections,
-  extremePoints,
+  rowAndCols,
 }) => {
   return (
     <>
@@ -21,10 +21,10 @@ const DataDisplay: React.FC<DataDisplayProps> = ({
           <p>{intersections.join(", ")}</p>
         </div>
       )}
-      {showExtremePoints && extremePoints.length > 0 && (
+      {showRowAndCols && rowAndCols.length > 0 && (
         <div>
-          <h2>Extreme Points:</h2>
-          <p>{extremePoints.join(", ")}</p>
+          <h2>Columns and Rows:</h2>
+          <p>{rowAndCols.join(", ")}</p>
         </div>
       )}
     </>

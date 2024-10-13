@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./CreateCar.module.css";
 
@@ -16,12 +14,17 @@ export const carImages = {
 
 interface CreateCarProps {
   position: { col: number; row: number };
-  color: keyof typeof carImages;
+  color: string;
   id: string;
   gridSize: number;
 }
 
-const CreateCar: React.FC<CreateCarProps> = ({ position, color, id }) => {
+const CreateCar: React.FC<CreateCarProps> = ({
+  position,
+  color,
+  id,
+  gridSize,
+}) => {
   const carRef = useRef<HTMLDivElement>(null);
   const [prevPosition, setPrevPosition] = useState(position);
   const [rotation, setRotation] = useState(0);
@@ -31,7 +34,7 @@ const CreateCar: React.FC<CreateCarProps> = ({ position, color, id }) => {
       carRef.current.style.transition =
         "left 0.5s ease-in-out, bottom 0.5s ease-in-out, transform 0.5s ease-in-out";
       carRef.current.style.left = `${position.col * 15}px`;
-      carRef.current.style.bottom = `${position.row * 15}px`;
+      carRef.current.style.bottom = `${(gridSize - 1 - position.row) * 15}px`;
 
       const dx = position.col - prevPosition.col;
       const dy = position.row - prevPosition.row;
@@ -39,9 +42,9 @@ const CreateCar: React.FC<CreateCarProps> = ({ position, color, id }) => {
       let newRotation = rotation;
 
       if (dx === 1 && dy === 0) newRotation = 0;
-      else if (dx === -1 && dy === 0) newRotation = 180;
-      else if (dx === 0 && dy === 1) newRotation = 270;
-      else if (dx === 0 && dy === -1) newRotation = 90;
+      else if (dx === -1 && dy === 0) newRotation = -180;
+      else if (dx === 0 && dy === 1) newRotation = -270;
+      else if (dx === 0 && dy === -1) newRotation = -90;
 
       // Calculate the shortest rotation
       let rotationDiff = newRotation - rotation;
@@ -58,7 +61,7 @@ const CreateCar: React.FC<CreateCarProps> = ({ position, color, id }) => {
   return (
     <div ref={carRef} className={styles.car} id={id}>
       <img
-        src={carImages[color]}
+        src={carImages[color as keyof typeof carImages]}
         alt={`${color} Car`}
         className={styles.carImage}
       />
