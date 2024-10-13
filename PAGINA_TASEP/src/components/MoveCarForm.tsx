@@ -32,22 +32,6 @@ const MoveCarForm: React.FC<MoveCarFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
-        <label htmlFor="carId">Select Car</label>
-        <select
-          id="carId"
-          value={selectedCarId}
-          onChange={(e) => setSelectedCarId(e.target.value)}
-          required
-        >
-          <option value="">Select a car</option>
-          {cars.map((car) => (
-            <option key={car.id} value={car.id}>
-              {`${car.id} (${car.color})`}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className={styles.formGroup}>
         <label htmlFor="newRow">New Row</label>
         <input
           type="number"
@@ -70,6 +54,22 @@ const MoveCarForm: React.FC<MoveCarFormProps> = ({
           min="0"
           max={gridSize - 1}
         />
+      </div>
+      <div className={styles.formGroup}>
+        <label htmlFor="carId">Select Car</label>
+        <select
+          id="carId"
+          value={selectedCarId}
+          onChange={(e) => setSelectedCarId(e.target.value)}
+          required
+        >
+          <option value="">Select a car</option>
+          {cars.map((car) => (
+            <option key={car.id} value={car.id}>
+              {`${car.id} (${car.color})`}
+            </option>
+          ))}
+        </select>
       </div>
       <button type="submit" className={styles.button}>
         Move Car

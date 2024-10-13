@@ -5,6 +5,7 @@ import DataDisplay from "./components/DataDisplay";
 import CarForm from "./components/CarForm";
 import CreateCar from "./components/CreateCar";
 import MoveCarForm from "./components/MoveCarForm";
+import { carImages } from "./components/CreateCar";
 import {
   calculateIntersections,
   calculateExtremePoints,
@@ -43,7 +44,7 @@ function App() {
   const handleAddCar = (
     row: number,
     col: number,
-    color: string,
+    color: keyof typeof carImages,
     id: string
   ) => {
     setCars((prevCars) => [...prevCars, { row, col, color, id }]);

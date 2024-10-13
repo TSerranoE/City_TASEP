@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./CreateCar.module.css";
 
-const carImages = {
+export const carImages = {
   blue: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/auto_azul-6KiJrNfUPFRBXSmVCIfljIlCGgOBCl.svg",
   green:
     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/auto_verde-AONDxkKbWMbXgDVZouwSWV7ZwijT4S.svg",
@@ -20,20 +22,41 @@ interface CreateCarProps {
 }
 
 const CreateCar: React.FC<CreateCarProps> = ({ position, color, id }) => {
+  const carRef = useRef<HTMLDivElement>(null);
+  const [prevPosition, setPrevPosition] = useState(position);
+  const [rotation, setRotation] = useState(0);
+
   useEffect(() => {
-    console.log(
-      `Car rendered - ID: ${id}, Row: ${position.row}, Column: ${position.col}, Color: ${color}`
-    );
-  }, [id, position, color]);
+    if (carRef.current) {
+      carRef.current.style.transition =
+        "left 0.5s ease-in-out, bottom 0.5s ease-in-out, transform 0.5s ease-in-out";
+      carRef.current.style.left = `${position.col * 15}px`;
+      carRef.current.style.bottom = `${position.row * 15}px`;
+
+      const dx = position.col - prevPosition.col;
+      const dy = position.row - prevPosition.row;
+      console.log(dx, dy);
+      let newRotation = rotation;
+
+      if (dx === 1 && dy === 0) newRotation = 0;
+      else if (dx === -1 && dy === 0) newRotation = 180;
+      else if (dx === 0 && dy === 1) newRotation = 270;
+      else if (dx === 0 && dy === -1) newRotation = 90;
+
+      // Calculate the shortest rotation
+      let rotationDiff = newRotation - rotation;
+      if (rotationDiff > 180) rotationDiff -= 360;
+      if (rotationDiff < -180) rotationDiff += 360;
+
+      setRotation(rotation + rotationDiff);
+      carRef.current.style.transform = `rotate(${rotation + rotationDiff}deg)`;
+
+      setPrevPosition(position);
+    }
+  }, [position]);
 
   return (
-    <div
-      className={styles.car}
-      style={{
-        left: `${position.col * 15}px`,
-        bottom: `${position.row * 15}px`,
-      }}
-    >
+    <div ref={carRef} className={styles.car} id={id}>
       <img
         src={carImages[color]}
         alt={`${color} Car`}
