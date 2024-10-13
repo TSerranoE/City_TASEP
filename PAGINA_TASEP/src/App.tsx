@@ -55,37 +55,6 @@ function App() {
     sendDataToBackend();
   }, [isActive]);
 
-  useEffect(() => {
-    const fetchState = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/state");
-        const data = await response.json();
-        console.log("Received state from backend:", data);
-      } catch (error) {
-        console.error("Error fetching simulation state:", error);
-      }
-    };
-
-    const intervalId = setInterval(fetchState, 500); // Fetch state every 0.5 seconds
-
-    return () => clearInterval(intervalId); // Clean up on unmount
-  }, []);
-  const toggleIntersections = () => {
-    setShowIntersections(!showIntersections);
-    setShowRowAndCols(false);
-  };
-
-  const toggleRowAndCols = () => {
-    setShowRowAndCols(!showRowAndCols);
-    setShowIntersections(false);
-  };
-
-  const getNextCarId = useCallback(() => {
-    const id = `car-${nextCarId}`;
-    setNextCarId((prevId) => prevId + 1);
-    return id;
-  }, [nextCarId]);
-
   const handleAddCar = (
     row: number,
     col: number,
@@ -103,14 +72,46 @@ function App() {
     );
   };
 
-  const toggleActive = () => setIsActive((prev) => !prev);
+  useEffect(() => {
+    const fetchState = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/state");
+        const data = await response.json();
+        console.log("Received state from backend:", data);
+      } catch (error) {
+        console.error("Error fetching simulation state:", error);
+      }
+    };
+
+    const intervalId = setInterval(fetchState, 500); // Fetch state every 0.5 seconds
+
+    return () => clearInterval(intervalId); // Clean up on unmount
+  }, []);
+
+  const toggleIntersections = () => {
+    setShowIntersections(!showIntersections);
+    setShowRowAndCols(false);
+  };
+
+  const toggleRowAndCols = () => {
+    setShowRowAndCols(!showRowAndCols);
+    setShowIntersections(false);
+  };
+
+  const getNextCarId = useCallback(() => {
+    const id = `car-${nextCarId}`;
+    setNextCarId((prevId) => prevId + 1);
+    return id;
+  }, [nextCarId]);
+
+  const toggleStart = () => setIsActive((prev) => !prev);
 
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>City Tasep</h1>
 
       <div className={styles.gridContainer}>
-        <StartButton onClick={toggleActive} isActive={isActive} />
+        <StartButton onClick={toggleStart} isActive={isActive} />
         <div className={styles.carContainer}>
           <Grid
             size={size}
