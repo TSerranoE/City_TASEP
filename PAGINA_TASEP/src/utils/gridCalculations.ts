@@ -31,9 +31,9 @@ export const calculateExtremePoints = (
   clickedLines.forEach((line) => {
     const [type, index] = line.split("-");
     if (type === "row") {
-      points.push(`(fila,(0,${index})`, `(${maxIndex},${index}))`);
+      points.push(`(fila,(0,${index}),(${maxIndex},${index}))`);
     } else {
-      points.push(`(columna,(${index},0)`, `(${index},${maxIndex}))`);
+      points.push(`(columna,(${index},0),(${index},${maxIndex}))`);
     }
   });
   return points;

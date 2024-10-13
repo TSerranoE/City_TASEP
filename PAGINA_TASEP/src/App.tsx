@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Grid from "./components/Grid";
 import ControlPanel from "./components/ControlPanel";
 import DataDisplay from "./components/DataDisplay";
@@ -25,6 +25,45 @@ function App() {
   const intersections = calculateIntersections(clickedLines);
   const extremePoints = calculateExtremePoints(clickedLines, size);
 
+  useEffect(() => {
+    const sendDataToBackend = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/update_data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            intersections: Array.from(intersections),
+            extremePoints: Array.from(extremePoints),
+            size,
+          }),
+        });
+        const data = await response.json();
+        console.log("Data sent to backend:", data);
+      } catch (error) {
+        console.error("Error sending data to backend:", error);
+      }
+    };
+
+    sendDataToBackend();
+  }, [intersections, extremePoints, size]);
+
+  useEffect(() => {
+    const fetchState = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/state");
+        const data = await response.json();
+        console.log("Received state from backend:", data);
+      } catch (error) {
+        console.error("Error fetching simulation state:", error);
+      }
+    };
+
+    const intervalId = setInterval(fetchState, 500); // Fetch state every 0.5 seconds
+
+    return () => clearInterval(intervalId); // Clean up on unmount
+  }, []);
   const toggleIntersections = () => {
     setShowIntersections(!showIntersections);
     setShowExtremePoints(false);
