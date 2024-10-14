@@ -11,10 +11,12 @@ class Particula:
     - __str__(): Devuelve una representación en cadena de la partícula como str.
     """
 
-    def __init__(self, posicion: int, bloqueado: bool, id: int=0) -> None:
+    def __init__(self, calle, posicion: int, bloqueado: bool = False, id: int=0) -> None:
+        self.calle = calle
         self.posicion = posicion
         self.bloqueado = bloqueado
         self.id = id
+        
     def avanzar(self) -> None:
         self.posicion += 1
 

@@ -43,7 +43,6 @@ class Calles():
             calle.update_secuencial(p)
             # Después de actualizar una calle es necesario actualizar los bloqueos de todas las calles
             self.update_bloqueos()
-            
 
     def update_paralelo(self, p: float) -> None:
         # Definir un orden para iterar (de manera uniforme para simular paralelismo)
@@ -86,9 +85,35 @@ class Calles():
         ax.set_ylabel('Y')
         plt.show()
 
+    def delete_particulas_posicion(self, posicion: int) -> None:
+        for calle in self.calles:
+            calle.delete_particulas_posicion(posicion)
+
     def add_calle(self, calle) -> None:
         self.calles.append(calle)
         if calle.direccion == 0:
             self.calles_x.append(calle)
         else:
             self.calles_y.append(calle)
+
+    def agregar_particulas_inicio(self, initial_id: int = 0) -> list:
+        particulas_agregadas = []
+        for calle in self.calles:
+            nueva_particula = calle.agregar_particula_inicio(initial_id)
+            if nueva_particula is not None:
+                particulas_agregadas.append(nueva_particula)
+                initial_id += 1
+        return particulas_agregadas
+
+    def vaciar_objeto(self) -> None:
+        self.calles = []
+        self.calles_x = []
+        self.calles_y = []
+        self.intersecciones = []
+
+    def get_particulas(self) -> list:
+        particulas = []
+        for calle in self.calles:
+            particulas += calle
+        return particulas
+
