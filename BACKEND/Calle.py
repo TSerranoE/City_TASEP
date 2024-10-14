@@ -25,18 +25,17 @@ class Calle(list):
         self.intersecciones = intersecciones
         self.posicion = posicion
 
-    def agregar_particula_inicio(self, id: int = 0) -> None:
+    def agregar_particula_inicio(self, id: int = 0, p: float = 1) -> None:
         nueva_particula = Particula(self, 0, False, id)
         if len(self) == 0:
             self.append(nueva_particula)
             self.update_estado_intersecciones()
             return nueva_particula
-        elif self[0].posicion != 0 and np.random.rand() < 0.5:
+        elif self[0].posicion != 0 and np.random.rand() < p:
             self.insert(0, nueva_particula)
             self.update_bloqueo()
             self.update_estado_intersecciones()
             return nueva_particula
-        
 
     def agregar_interseccion(self, interseccion: Interseccion) -> None:
         self.intersecciones.append(interseccion)
@@ -45,8 +44,6 @@ class Calle(list):
         for i, p in enumerate(self):
             if p.posicion > posicion:
                 break
-
-
 
     def update_estado_intersecciones(self) -> None:
         for interseccion in self.intersecciones:

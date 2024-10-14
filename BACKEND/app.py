@@ -21,10 +21,10 @@ def run_simulation(calles):
     id = 0
     while True:
         time.sleep(1)
-        particulas_agregadas = calles.agregar_particulas_inicio(id)
+        particulas_agregadas = calles.agregar_particulas_inicio(id, p=0.6)
         if len(particulas_agregadas) != 0:
             id = particulas_agregadas[-1].id + 1
-        calles.update_secuencial(1)
+        calles.update_secuencial(0.5)
         calles.delete_particulas_posicion(50)
 
 simulation_thread = threading.Thread(target=run_simulation, args=(calles,))

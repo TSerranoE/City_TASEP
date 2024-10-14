@@ -96,10 +96,10 @@ class Calles():
         else:
             self.calles_y.append(calle)
 
-    def agregar_particulas_inicio(self, initial_id: int = 0) -> list:
+    def agregar_particulas_inicio(self, initial_id: int = 0, p: float = 1) -> list:
         particulas_agregadas = []
         for calle in self.calles:
-            nueva_particula = calle.agregar_particula_inicio(initial_id)
+            nueva_particula = calle.agregar_particula_inicio(initial_id, p)
             if nueva_particula is not None:
                 particulas_agregadas.append(nueva_particula)
                 initial_id += 1
