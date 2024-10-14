@@ -73,17 +73,35 @@ function App() {
   };
 
   useEffect(() => {
-    const fetchState = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/state");
-        const data = await response.json();
-        console.log("Received state from backend:", data);
-      } catch (error) {
-        console.error("Error fetching simulation state:", error);
-      }
-    };
+  const fetchState = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/state");
+      const data = await response.json();
 
-    const intervalId = setInterval(fetchState, 500); // Fetch state every 0.5 seconds
+      const particulas = data['particulas'];
+      const particulas_agregadas = data['particulas_agregadas'];
+
+      // Convert particulas_agregadas object to an array and iterate
+      Object.values(particulas_agregadas).forEach((particula) => {
+        const { col, color, id, row } = particula;
+        console.log("Adding car:", particula);
+        handleAddCar(col, row, color, id);
+      });
+
+      // Convert particulas object to an array and iterate
+      Object.values(particulas).forEach((particula) => {
+        const { id, new_col, new_row} = particula;
+        console.log("Updating car:", particula);
+        handleMoveCar(id, new_col, new_row);
+      });
+
+      //console.log("Received state from backend:", data);
+    } catch (error) {
+      console.error("Error fetching simulation state:", error);
+    }
+  };
+
+    const intervalId = setInterval(fetchState, 1000); // Fetch state every 0.5 seconds
 
     return () => clearInterval(intervalId); // Clean up on unmount
   }, []);

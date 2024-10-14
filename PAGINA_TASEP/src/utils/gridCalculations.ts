@@ -33,7 +33,7 @@ export const calculateRowAndCols = (
       calles.push(`0;${index}`);
       rowAndCols.push(`row ${index}`);
     } else {
-      calles.push(`1:${index}`);
+      calles.push(`1;${index}`);
       rowAndCols.push(`col ${index}`);
     }
   });
