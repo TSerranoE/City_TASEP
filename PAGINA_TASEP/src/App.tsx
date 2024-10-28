@@ -5,6 +5,7 @@ import Grid from "./components/Grid";
 // import CarForm from "./components/CarForm";
 // import MoveCarForm from "./components/MoveCarForm";
 import CreateCar from "./components/CreateCar";
+import TripleSwitch from "./components/TrippleSwitch";
 import {
   calculateIntersections,
   calculateRowAndCols,
@@ -142,7 +143,6 @@ function App() {
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>City Tasep</h1>
-
       <div className={styles.gridContainer}>
         <StartButton onClick={toggleStart} isActive={isActive} />
         <div className={styles.carContainer}>
@@ -162,30 +162,11 @@ function App() {
             />
           ))}
         </div>
-      </div>
-
-      <p className={styles.instructions}>Scroll or press 'r' to rotate.</p>
-      {/* <ControlPanel
-        showIntersections={showIntersections}
-        showRowAndCols={showRowAndCols}
-        onToggleIntersections={toggleIntersections}
-        onToggleRowAndCols={toggleRowAndCols}
-      />
-
-      <DataDisplay
-        showIntersections={showIntersections}
-        showRowAndCols={showRowAndCols}
-        intersections={intersections}
-        rowAndCols={rowAndCols}
-      />
-      <div className={styles.formContainer}>
-        <CarForm
-          onAddCar={handleAddCar}
-          gridSize={size}
-          getNextCarId={getNextCarId}
+        <TripleSwitch
+          onChange={(value) => console.log("Switch value:", value)}
         />
-        <MoveCarForm onMoveCar={handleMoveCar} gridSize={size} cars={cars} />
-      </div> */}
+      </div>
+      <p className={styles.instructions}>Scroll or press 'r' to rotate.</p>
     </div>
   );
 }
