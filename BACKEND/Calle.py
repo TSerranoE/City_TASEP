@@ -1,8 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from Interseccion import Interseccion
-from Particula import Particula
+from .Particula import Particula
+from .Interseccion import Interseccion
+
+
+
 class Calle(list):
 
     """
@@ -24,6 +27,34 @@ class Calle(list):
         self.direccion = direccion
         self.intersecciones = intersecciones
         self.posicion = posicion
+        self.altura = None
+        self.inv = None
+
+    
+    def inversa(self,u):
+            for i in range(1, len(self)+1):
+                if self[-i].posicion<=u:
+                    return i-1
+
+
+    def iniciar_altura(self, Min, Max) -> None:
+        inv=self.inversa(-1)
+        dict={}
+        
+        for u in range(Min, Max+1):
+            dict[u]=2*(self.inversa(u-1)-inv)+u
+        self.altura=dict
+        self.inv=inv
+    
+    def actualizar_altura(self) -> None:
+        Min=list(self.altura.keys())[0]
+        Max=list(self.altura.keys())[-1]
+        dict={}
+
+        for u in range(Min, Max+1):
+            dict[u]=2*(self.inversa(u-1)-self.inv)+u
+        self.altura=dict              
+
 
     def agregar_particula_inicio(self, id: int = 0, p: float = 1) -> None:
         nueva_particula = Particula(self, 0, False, id)
