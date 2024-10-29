@@ -1,23 +1,18 @@
-import { useState, /* useCallback, */ useEffect } from "react";
+import { useState, useEffect } from "react";
 import Grid from "./components/Grid";
-// import ControlPanel from "./components/ControlPanel";
-// import DataDisplay from "./components/DataDisplay";
-// import CarForm from "./components/CarForm";
-// import MoveCarForm from "./components/MoveCarForm";
 import CreateCar from "./components/CreateCar";
 import TripleSwitch from "./components/TrippleSwitch";
-import {
-  calculateIntersections,
-  calculateRowAndCols,
-} from "./utils/gridCalculations";
 import styles from "./App.module.css";
 import StartButton from "./components/StartButton";
+import calculateRowAndCols from "./utils/calculateRowAndCols";
 
 function App() {
-  const size = 50;
+  const size = 25;
   const [clickedLines, setClickedLines] = useState<Set<string>>(new Set());
-  // const [showIntersections, setShowIntersections] = useState(false);
-  // const [showRowAndCols, setShowRowAndCols] = useState(false);
+  const { calles } = calculateRowAndCols(clickedLines);
+  const [isClear, setIsClear] = useState(true);
+  const [isStart, setisStart] = useState(false);
+  const toggleStart = () => setisStart((prev) => !prev);
   const [cars, setCars] = useState<
     Array<{
       row: number;
@@ -26,11 +21,6 @@ function App() {
       id: string;
     }>
   >([]);
-  //const [nextCarId, setNextCarId] = useState(1);
-  const [isActive, setIsActive] = useState(false);
-
-  const intersections = calculateIntersections(clickedLines);
-  const { /* rowAndCols, */ calles } = calculateRowAndCols(clickedLines);
 
   useEffect(() => {
     const sendDataToBackend = async () => {
@@ -41,11 +31,13 @@ function App() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            intersections: Array.from(intersections),
             calles: Array.from(calles),
-            size,
+            size: size,
+            isStart: isStart,
+            isClear: isClear,
           }),
         });
+        setIsClear(false);
         const data = await response.json();
         console.log("Data sent to backend:", data);
       } catch (error) {
@@ -54,7 +46,7 @@ function App() {
     };
 
     sendDataToBackend();
-  }, [isActive]);
+  }, [isStart]);
 
   const handleAddCar = (
     row: number,
@@ -122,35 +114,17 @@ function App() {
     return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
 
-  // const toggleIntersections = () => {
-  //   setShowIntersections(!showIntersections);
-  //   setShowRowAndCols(false);
-  // };
-
-  // const toggleRowAndCols = () => {
-  //   setShowRowAndCols(!showRowAndCols);
-  //   setShowIntersections(false);
-  // };
-
-  // const getNextCarId = useCallback(() => {
-  //   const id = `car-${nextCarId}`;
-  //   setNextCarId((prevId) => prevId + 1);
-  //   return id;
-  // }, [nextCarId]);
-
-  const toggleStart = () => setIsActive((prev) => !prev);
-
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>City Tasep</h1>
       <div className={styles.gridContainer}>
-        <StartButton onClick={toggleStart} isActive={isActive} />
+        <StartButton onClick={toggleStart} isStart={isStart} />
         <div className={styles.carContainer}>
           <Grid
             size={size}
             clickedLines={clickedLines}
             onClickedLinesUpdate={setClickedLines}
-            isActive={isActive}
+            isStart={isStart}
           />
           {cars.map((car) => (
             <CreateCar

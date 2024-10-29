@@ -3,16 +3,16 @@ import styles from "./StartButton.module.css";
 
 interface StartButtonProps {
   onClick: () => void;
-  isActive: boolean;
+  isStart: boolean;
 }
 
-const StartButton: React.FC<StartButtonProps> = ({ onClick, isActive }) => {
+const StartButton: React.FC<StartButtonProps> = ({ onClick, isStart }) => {
   return (
     <button
-      className={`${styles.startButton} ${isActive ? styles.active : ""}`}
+      className={`${styles.startButton} ${isStart ? styles.active : ""}`}
       onClick={onClick}
     >
-      {isActive ? "Stop" : "Start"}
+      {isStart ? "Stop" : "Start"}
     </button>
   );
 };

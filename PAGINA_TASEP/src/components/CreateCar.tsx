@@ -38,7 +38,7 @@ const CreateCar: React.FC<CreateCarProps> = ({
 
       const dx = position.col - prevPosition.col;
       const dy = position.row - prevPosition.row;
-      console.log(dx, dy);
+      //console.log(dx, dy);
       let newRotation = rotation;
 
       if (dx === 1 && dy === 0) newRotation = 0;
