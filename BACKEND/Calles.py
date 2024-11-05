@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import random
-from .Interseccion import Interseccion
+from Interseccion import Interseccion
 class Calles():
 
     def __init__(self, calles: list) -> None:
