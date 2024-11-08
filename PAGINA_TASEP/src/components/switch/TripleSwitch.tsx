@@ -1,13 +1,8 @@
 import { useState } from "react";
-import styles from "./TrippleSwitch.module.css";
+import type { Position, TripleSwitchProps } from "./types";
+import styles from "./styles.module.css";
 
-type Position = "left" | "center" | "right";
-
-interface SwitchProps {
-  onChange?: (value: string) => void;
-}
-
-const TripleSwitch: React.FC<SwitchProps> = ({ onChange }) => {
+const TripleSwitch = ({ onChange }: TripleSwitchProps) => {
   const [position, setPosition] = useState<Position>("left");
 
   const handleChange = (newPosition: Position) => {

@@ -6,6 +6,16 @@
   justify-content: center;
   align-items: center;
   z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.car.visible {
+  opacity: 1;
+}
+
+.car.leaving {
+  opacity: 0;
 }
 
 .carImage {

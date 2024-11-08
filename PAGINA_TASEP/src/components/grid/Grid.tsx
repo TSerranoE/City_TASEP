@@ -1,20 +1,14 @@
 import React, { useState, useCallback } from "react";
 import GridCell from "./GridCell";
-import GridControls from "../components_no_usados/GridControls";
-import styles from "./Grid.module.css";
-
-interface GridProps {
-  size: number;
-  clickedLines: Set<string>;
-  onClickedLinesUpdate: (clickedLines: Set<string>) => void;
-  isStart: boolean;
-}
+import styles from "./styles.module.css";
+import GridControls from "./GridControls";
+import type { GridProps } from "./types";
 
 const Grid: React.FC<GridProps> = ({
   size,
   clickedLines,
   onClickedLinesUpdate,
-  isStart,
+  hasStarted,
 }) => {
   const [hoverCell, setHoverCell] = useState<{
     row: number;
@@ -25,7 +19,7 @@ const Grid: React.FC<GridProps> = ({
 
   const handleCellClick = useCallback(
     (row: number, col: number) => {
-      if (hoverCell && !isStart) {
+      if (hoverCell && !hasStarted) {
         const newClickedLines = new Set(clickedLines);
         const lineKey = isVerticalHover ? `col-${col}` : `row-${row}`;
         if (newClickedLines.has(lineKey)) {
@@ -36,14 +30,14 @@ const Grid: React.FC<GridProps> = ({
         onClickedLinesUpdate(newClickedLines);
       }
     },
-    [hoverCell, isVerticalHover, onClickedLinesUpdate, isStart, clickedLines]
+    [hoverCell, isVerticalHover, onClickedLinesUpdate, hasStarted, clickedLines]
   );
 
   const toggleHoverOrientation = useCallback(() => {
-    if (!isStart) {
+    if (!hasStarted) {
       setIsVerticalHover((prev) => !prev);
     }
-  }, [isStart]);
+  }, [hasStarted]);
 
   const handleGridMouseEnter = () => setIsGridSelected(true);
   const handleGridMouseLeave = () => setIsGridSelected(false);
@@ -56,7 +50,8 @@ const Grid: React.FC<GridProps> = ({
     >
       <GridControls
         onToggleHoverOrientation={toggleHoverOrientation}
-        isGridSelected={isGridSelected && !isStart}
+        isGridSelected={isGridSelected}
+        hasStarted={hasStarted}
       />
       <div className={styles.grid}>
         {Array.from({ length: size }, (_, index) => {
@@ -73,7 +68,7 @@ const Grid: React.FC<GridProps> = ({
                     clickedLines.has(`col-${col}`)
                   }
                   isHovered={
-                    !isStart &&
+                    !hasStarted &&
                     (isVerticalHover
                       ? col === hoverCell?.col
                       : row === hoverCell?.row)
@@ -81,9 +76,9 @@ const Grid: React.FC<GridProps> = ({
                   isVerticalHover={isVerticalHover}
                   onClick={handleCellClick}
                   onMouseEnter={(cell) =>
-                    !isStart && setHoverCell({ ...cell, row: row })
+                    !hasStarted && setHoverCell({ ...cell, row: row })
                   }
-                  onMouseLeave={() => !isStart && setHoverCell(null)}
+                  onMouseLeave={() => !hasStarted && setHoverCell(null)}
                 />
               ))}
             </div>

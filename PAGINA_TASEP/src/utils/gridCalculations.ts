@@ -1,4 +1,4 @@
-const calculateRowAndCols = (
+export const calculateRowAndCols = (
   clickedLines: Set<string>
 ): { rowAndCols: string[]; calles: string[] } => {
   const calles: string[] = [];
@@ -17,5 +17,3 @@ const calculateRowAndCols = (
 
   return { rowAndCols, calles };
 };
-
-export default calculateRowAndCols;
