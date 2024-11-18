@@ -15,8 +15,10 @@ calles = Calles([])
 
 
 particulas_agregadas = []
+ultimo_id = 0
 size= 50
 isStart = False
+mode = 'paralelo'
 simulation_running = True
 simulation_paused = threading.Event()
 simulation_paused.set() 
@@ -31,11 +33,14 @@ def run_simulation(calles):
             time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
             continue
         time.sleep(1)
-        global particulas_agregadas
-        particulas_agregadas = calles.agregar_particulas_inicio(id, p=0.6)
-        if len(particulas_agregadas) != 0:
-            id = particulas_agregadas[-1].id + 1
-        calles.update_secuencial(0.5)
+        #global particulas_agregadas
+        #particulas_agregadas = calles.agregar_particulas_inicio(id, p=0.6)
+        #if len(particulas_agregadas) != 0:
+            #id = particulas_agregadas[-1].id + 1
+        if mode == 'secuencial': 
+            calles.update_secuencial(0.5)
+        else:
+            calles.update_paralelo(0.5)
         calles.delete_particulas_posicion(size)
 
 simulation_thread = threading.Thread(target=run_simulation, args=(calles,))
@@ -43,12 +48,13 @@ simulation_thread.start()
 
 @app.route('/update_data', methods=['POST'])
 def update_data():
-    global size, isStart, simulation_paused
+    global size, isStart, simulation_paused, mode, ultimo_id, particulas_agregadas
     data = request.json
     extreme_points = data['calles']
     size = data['size']
     isStart = data['isStart']
     isClear = data['isClear']
+    mode = data['mode']
     print(isClear)
     if isStart:
         simulation_paused.set()  # Reanudar la simulación
@@ -60,6 +66,17 @@ def update_data():
         for extreme_point in extreme_points:
             direccion, posicion = extreme_point.split(";")
             calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
+            # Densidad 
+            densidad = 1
+            step = int(1/densidad)
+            posicion = 0
+            numero_particulas_inicial = 1000
+            for i in range(numero_particulas_inicial):
+                particula = Particula(id=i, posicion=posicion)
+                calle.insert(0, particula)
+                particulas_agregadas.append(particula)
+                ultimo_id += 1
+                posicion += step
             calles.add_calle(calle)
         calles.update_intersecciones()
     return jsonify({"status": "success", "message": "Data received successfully"})
