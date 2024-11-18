@@ -14,6 +14,7 @@ function App() {
   const { DiccionarioFuncionAltura } = useReceiveSimulationData(isStart);
 
   const generateDataPlot3D = useCallback(() => {
+    console.log(DiccionarioFuncionAltura);
     const data = [];
     for (let y = 0; y < 25; y++) {
       const row = [];
@@ -22,6 +23,7 @@ function App() {
       }
       data.push(row);
     }
+    console.log(data);
     return data;
   }, []);
 
