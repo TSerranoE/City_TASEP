@@ -130,7 +130,7 @@ def get_state():
                 'new_col': columna
             }
 
-    diccionario_funcion_altura = {}   
+    diccionario_funcion_altura = {str(x)+','+str(y): 0 for x in range(size+1) for y in range(size+1)}   
         
     for calle in calles.calles:
         calle.actualizar_altura()
@@ -140,18 +140,17 @@ def get_state():
             y = calle.posicion
             for x in range(size+1):
                 if (x, y) in intersecciones.keys():
-                    diccionario_funcion_altura[(x, y)] = max(intersecciones[(x, y)][1].altura[y], calle.altura[x])
-                    print(diccionario_funcion_altura[(x, y)])
+                    diccionario_funcion_altura[str(x)+','+str(y)] = max(intersecciones[(x, y)][1].altura[y], calle.altura[x])
                 else:
-                    diccionario_funcion_altura[(x, y)] = calle.altura[x]
+                    diccionario_funcion_altura[str(x)+','+str(y)] = calle.altura[x]
         else:
             x = calle.posicion
             for y in range(size+1):
                 if (x, y) in intersecciones.keys():
-                    diccionario_funcion_altura[(x, y)] = max(intersecciones[(x, y)][0].altura[x], calle.altura[y])
-                    print(diccionario_funcion_altura[(x, y)])
+                    diccionario_funcion_altura[str(x)+','+str(y)] = max(intersecciones[(x, y)][0].altura[x], calle.altura[y])
                 else:
-                    diccionario_funcion_altura[(x, y)] = calle.altura[y]
+                    diccionario_funcion_altura[str(x)+','+str(y)] = calle.altura[y]
+        
     print(diccionario_funcion_altura)
 
 
@@ -159,7 +158,7 @@ def get_state():
     return jsonify({
         "particulas": diccionario_particulas,
         "particulas_agregadas": diccionario_particulas_agregadas,
-        #"diccionario_funcion_altura": diccionario_funcion_altura
+        "diccionario_funcion_altura": diccionario_funcion_altura
     })
 
 if __name__ == '__main__':
