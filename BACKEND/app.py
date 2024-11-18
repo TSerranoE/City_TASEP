@@ -20,6 +20,8 @@ size= 50
 isStart = False
 mode = 'paralelo'
 simulation_running = True
+step = 1
+cantidad_inicial = 10
 simulation_paused = threading.Event()
 simulation_paused.set() 
 #data_lock = threading.Lock()
@@ -48,13 +50,15 @@ simulation_thread.start()
 
 @app.route('/update_data', methods=['POST'])
 def update_data():
-    global size, isStart, simulation_paused, mode, ultimo_id, particulas_agregadas
+    global size, isStart, simulation_paused, mode, step, cantidad_inicial,  ultimo_id, particulas_agregadas
     data = request.json
     extreme_points = data['calles']
     size = data['size']
     isStart = data['isStart']
     isClear = data['isClear']
     mode = data['mode']
+    #step = data['step']
+    #cantidad_inicial = data['cantidad_inicial']
     print(isClear)
     if isStart:
         simulation_paused.set()  # Reanudar la simulación
@@ -67,16 +71,14 @@ def update_data():
             direccion, posicion = extreme_point.split(";")
             calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
             # Densidad 
-            densidad = 1
-            step = int(1/densidad)
-            posicion = 1
-            numero_particulas_inicial = 1000
-            for i in range(numero_particulas_inicial):
-                particula = Particula(id=i, posicion=posicion)
+            posicion = -1
+            for i in range(cantidad_inicial):
+                particula = Particula(id=ultimo_id, posicion=posicion, calle=calle)
                 calle.insert(0, particula)
                 particulas_agregadas.append(particula)
                 ultimo_id += 1
-                posicion += step
+                posicion -= step
+            calle.iniciar_altura(0, size)
             calles.add_calle(calle)
         calles.update_intersecciones()
     return jsonify({"status": "success", "message": "Data received successfully"})
@@ -105,6 +107,7 @@ def get_state():
             'id': particula.id
         }
     particulas = calles.get_particulas()
+
     diccionario_particulas = {}
     for particula in particulas:
         direccion = particula.calle.direccion
@@ -120,10 +123,33 @@ def get_state():
                 'new_row': fila,
                 'new_col': columna
             }
-    #print(diccionario_particulas, diccionario_particulas_agregadas)
+
+    diccionario_funcion_altura = {}   
+        
+    for calle in calles.calles:
+        calle.actualizar_altura()
+        direccion = calle.direccion
+        intersecciones = {interseccion.posicion: interseccion.calles for interseccion in calle.intersecciones}
+        if direccion == 0:
+            y = calle.posicion
+            for x in range(size+1):
+                if (x, y) in intersecciones.keys():
+                    diccionario_funcion_altura[(x, y)] = max(intersecciones[(x, y)][1].altura[y], calle.altura[x])
+                diccionario_funcion_altura[(x, y)] = calle.altura[x]
+        else:
+            x = calle.posicion
+            for y in range(size+1):
+                if (x, y) in intersecciones.keys():
+                    diccionario_funcion_altura[(x, y)] = max(intersecciones[(x, y)][0].altura[x], calle.altura[y])
+                diccionario_funcion_altura[(x, y)] = calle.altura[y]
+    print(diccionario_funcion_altura)
+
+
+
     return jsonify({
         "particulas": diccionario_particulas,
-        "particulas_agregadas": diccionario_particulas_agregadas
+        "particulas_agregadas": diccionario_particulas_agregadas,
+        #"diccionario_funcion_altura": diccionario_funcion_altura
     })
 
 if __name__ == '__main__':
