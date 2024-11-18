@@ -61,3 +61,12 @@
   margin-top: 2rem;
   width: 100%;
 }
+
+.heightFunctionContainer {
+  width: 100%;
+  max-width: 1200px; /* Increased max-width */
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}

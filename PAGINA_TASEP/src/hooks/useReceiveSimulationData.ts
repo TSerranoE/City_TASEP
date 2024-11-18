@@ -3,6 +3,9 @@ import type { Car } from "../components/CityGrid/types";
 
 export function useReceiveSimulationData(isStart: boolean) {
   const [cars, setCars] = useState<Car[]>([]);
+  const [DiccionarioFuncionAltura, setDiccionarioFuncionAltura] = useState<any>(
+    []
+  );
 
   useEffect(() => {
     if (!isStart) return () => {}; // Don't clear cars when stopping
@@ -11,7 +14,7 @@ export function useReceiveSimulationData(isStart: boolean) {
       try {
         const response = await fetch("http://localhost:5000/state");
         const data = await response.json();
-
+        setDiccionarioFuncionAltura(data.diccionario_funcion_altura);
         // Handle new cars
         Object.values(data.particulas_agregadas).forEach((particula: any) => {
           const { col, color, id, row } = particula;
@@ -44,5 +47,5 @@ export function useReceiveSimulationData(isStart: boolean) {
     return () => clearInterval(intervalId);
   }, [isStart]);
 
-  return { cars };
+  return { cars, DiccionarioFuncionAltura };
 }
