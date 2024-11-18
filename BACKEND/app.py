@@ -69,7 +69,7 @@ def update_data():
             # Densidad 
             densidad = 1
             step = int(1/densidad)
-            posicion = 0
+            posicion = 1
             numero_particulas_inicial = 1000
             for i in range(numero_particulas_inicial):
                 particula = Particula(id=i, posicion=posicion)
