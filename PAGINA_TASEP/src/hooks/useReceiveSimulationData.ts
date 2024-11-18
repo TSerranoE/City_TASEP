@@ -40,7 +40,7 @@ export function useReceiveSimulationData(isStart: boolean) {
       }
     };
 
-    const intervalId = setInterval(fetchState, 1000);
+    const intervalId = setInterval(fetchState, 500);
     return () => clearInterval(intervalId);
   }, [isStart]);
 

@@ -20,7 +20,7 @@ size= 50
 isStart = False
 mode = 'paralelo'
 simulation_running = True
-step = 1
+step = 5
 cantidad_inicial = 100
 simulation_paused = threading.Event()
 simulation_paused.set() 
@@ -43,9 +43,9 @@ def run_simulation(calles):
         else:
             calles.update_paralelo(0.5)
         calles.delete_particulas_posicion(size)
-        for particula in particulas_agregadas:
-            if particula.posicion > size:
-                particulas_agregadas.remove(particula)
+        #for particula in particulas_agregadas:
+        #   if particula.posicion > size:
+        #       particulas_agregadas.remove(particula)
         
 
 simulation_thread = threading.Thread(target=run_simulation, args=(calles,))
