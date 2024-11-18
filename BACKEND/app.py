@@ -21,20 +21,19 @@ isStart = False
 mode = 'paralelo'
 simulation_running = True
 step = 1
-cantidad_inicial = 10
+cantidad_inicial = 100
 simulation_paused = threading.Event()
 simulation_paused.set() 
 #data_lock = threading.Lock()
 
 def run_simulation(calles):
-    
-    id = 0
+    global particulas_agregadas
     while simulation_running:
         simulation_paused.wait()  # Espera si está en pausa
         if not isStart:
             time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
             continue
-        time.sleep(1)
+        time.sleep(0.5)
         #global particulas_agregadas
         #particulas_agregadas = calles.agregar_particulas_inicio(id, p=0.6)
         #if len(particulas_agregadas) != 0:
@@ -44,6 +43,10 @@ def run_simulation(calles):
         else:
             calles.update_paralelo(0.5)
         calles.delete_particulas_posicion(size)
+        for particula in particulas_agregadas:
+            if particula.posicion > size:
+                particulas_agregadas.remove(particula)
+        
 
 simulation_thread = threading.Thread(target=run_simulation, args=(calles,))
 simulation_thread.start()
@@ -67,18 +70,21 @@ def update_data():
 
     if isClear or len(calles.calles) == 0:
         calles.vaciar_objeto()
+        ultimo_id = 0
+        particulas_agregadas = []
         for extreme_point in extreme_points:
             direccion, posicion = extreme_point.split(";")
             calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
             # Densidad 
             posicion = -1
             for i in range(cantidad_inicial):
-                particula = Particula(id=ultimo_id, posicion=posicion, calle=calle)
+                particula = Particula(id=ultimo_id, posicion=posicion, calle=calle, bloqueado=True)
                 calle.insert(0, particula)
                 particulas_agregadas.append(particula)
                 ultimo_id += 1
                 posicion -= step
-            calle.iniciar_altura(0, size)
+            calle.iniciar_altura(-size, size)
+            calle.update_bloqueo()
             calles.add_calle(calle)
         calles.update_intersecciones()
     return jsonify({"status": "success", "message": "Data received successfully"})
@@ -94,12 +100,12 @@ def get_state():
         direccion = particula.calle.direccion
         if direccion == 0:
             color = 'yellow'
-            fila = particula.calle.posicion
-            columna = particula.posicion
-        else:
-            color = 'red'
             columna = particula.calle.posicion
             fila = particula.posicion
+        else:
+            color = 'red'
+            fila = particula.calle.posicion
+            columna = particula.posicion
         diccionario_particulas_agregadas[particula.id] = {
             'row': fila,
             'col': columna,
@@ -113,7 +119,7 @@ def get_state():
         direccion = particula.calle.direccion
         if direccion == 0:
             columna = particula.calle.posicion
-            fila = particula.posicion
+            fila = particula.posicion 
         else:
             fila = particula.calle.posicion
             columna = particula.posicion
@@ -135,13 +141,17 @@ def get_state():
             for x in range(size+1):
                 if (x, y) in intersecciones.keys():
                     diccionario_funcion_altura[(x, y)] = max(intersecciones[(x, y)][1].altura[y], calle.altura[x])
-                diccionario_funcion_altura[(x, y)] = calle.altura[x]
+                    print(diccionario_funcion_altura[(x, y)])
+                else:
+                    diccionario_funcion_altura[(x, y)] = calle.altura[x]
         else:
             x = calle.posicion
             for y in range(size+1):
                 if (x, y) in intersecciones.keys():
                     diccionario_funcion_altura[(x, y)] = max(intersecciones[(x, y)][0].altura[x], calle.altura[y])
-                diccionario_funcion_altura[(x, y)] = calle.altura[y]
+                    print(diccionario_funcion_altura[(x, y)])
+                else:
+                    diccionario_funcion_altura[(x, y)] = calle.altura[y]
     print(diccionario_funcion_altura)
 
 
