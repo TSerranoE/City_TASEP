@@ -12,7 +12,7 @@ function App() {
   const [simulationMode, setSimulationMode] = useState("Paralelo");
   const { DiccionarioFuncionAltura } = useReceiveSimulationData(isStart);
 
-  const size = 100;
+  const size = 25;
 
   const generateDataPlot3D = useCallback(() => {
     if (!DiccionarioFuncionAltura) return Array(size).fill(Array(size).fill(0));
