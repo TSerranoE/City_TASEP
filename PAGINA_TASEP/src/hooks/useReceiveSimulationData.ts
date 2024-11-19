@@ -14,10 +14,7 @@ export function useReceiveSimulationData(isStart: boolean) {
       try {
         const response = await fetch("http://localhost:5000/state");
         const data = await response.json();
-        setDiccionarioFuncionAltura(
-          Object.values(data.diccionario_funcion_altura)
-        );
-
+        setDiccionarioFuncionAltura(data.diccionario_funcion_altura);
         // Handle new cars
         Object.values(data.particulas_agregadas).forEach((particula: any) => {
           const { col, color, id, row } = particula;
