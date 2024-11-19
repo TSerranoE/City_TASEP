@@ -4,6 +4,11 @@ import type { CreateCarProps } from "./types";
 import styles from "./styles.module.css";
 
 const CreateCar = ({ position, color, id, gridSize }: CreateCarProps) => {
+  // Don't render if position is negative
+  if (position.row < 0 || position.col < 0) {
+    return null;
+  }
+
   const carRef = useRef<HTMLDivElement>(null);
   const [prevPosition, setPrevPosition] = useState(position);
   const [isVisible, setIsVisible] = useState(false);
@@ -13,9 +18,7 @@ const CreateCar = ({ position, color, id, gridSize }: CreateCarProps) => {
   const [rotation, setRotation] = useState(() => {
     // If initial position is at col 0, it's moving horizontally (0 degrees)
     // If initial position is at row 0, it's moving vertically (-90 degrees)
-    return color === "red" && (position.row === 0 || position.row === 1)
-      ? 90
-      : 0;
+    return position.row === 0 ? 90 : 0;
   });
 
   useEffect(() => {

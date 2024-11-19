@@ -6,8 +6,6 @@ import { useReceiveSimulationData } from "../../hooks/useReceiveSimulationData";
 import type { CityGridProps } from "./types";
 import styles from "./styles.module.css";
 
-const GRID_SIZE = 25;
-
 export default function CityGrid({
   clickedLines,
   onClickedLinesUpdate,
@@ -15,13 +13,14 @@ export default function CityGrid({
   isClear,
   setIsClear,
   simulationMode,
+  size,
 }: CityGridProps) {
   const [hasStarted, setHasStarted] = useState(false);
   const { cars } = useReceiveSimulationData(isStart);
 
   useSendSimulationData({
     clickedLines,
-    size: GRID_SIZE,
+    size,
     isStart,
     isClear,
     setIsClear,
@@ -36,7 +35,7 @@ export default function CityGrid({
   return (
     <div className={styles.carContainer}>
       <Grid
-        size={GRID_SIZE}
+        size={size}
         clickedLines={clickedLines}
         onClickedLinesUpdate={onClickedLinesUpdate}
         hasStarted={hasStarted}
@@ -47,7 +46,7 @@ export default function CityGrid({
           position={{ col: car.col, row: car.row }}
           color={car.color}
           id={car.id}
-          gridSize={GRID_SIZE}
+          gridSize={size}
         />
       ))}
     </div>

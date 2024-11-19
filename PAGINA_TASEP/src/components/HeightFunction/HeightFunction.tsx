@@ -59,13 +59,11 @@ const DataPoints: React.FC<
   );
 };
 
-const Surface: React.FC<
+const ConnectingLines: React.FC<
   SceneElementProps & { data: number[][]; size: number; heightScale: number }
 > = ({ data, size, heightScale, position = [0, 0, 0], scale = 1 }) => {
-  const geometry = useMemo(() => {
-    const geo = new THREE.BufferGeometry();
-    const vertices: number[] = [];
-    const indices: number[] = [];
+  const lines = useMemo(() => {
+    const linesArray = [];
     const validValues = data
       .flat()
       .filter((val) => val !== undefined && val !== null && val !== 0);
@@ -73,57 +71,54 @@ const Surface: React.FC<
     const minValue = Math.min(...validValues);
     const range = maxValue - minValue || 1;
 
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const value = data[y][x];
-        const normalizedValue =
-          value !== undefined && value !== null && value !== 0
-            ? ((value - minValue) / range) * heightScale
-            : 0;
-        vertices.push(
+    // Helper function to get normalized position
+    const getPosition = (x: number, y: number) => {
+      const value = data[y][x];
+      if (value !== undefined && value !== null && value !== 0) {
+        const normalizedValue = ((value - minValue) / range) * heightScale;
+        return new THREE.Vector3(
           x / (size - 1) - 0.5,
           normalizedValue,
           y / (size - 1) - 0.5
         );
       }
-    }
+      return null;
+    };
 
-    for (let y = 0; y < size - 1; y++) {
+    // Connect points horizontally
+    for (let y = 0; y < size; y++) {
       for (let x = 0; x < size - 1; x++) {
-        const a = x + y * size;
-        const b = x + 1 + y * size;
-        const c = x + (y + 1) * size;
-        const d = x + 1 + (y + 1) * size;
-
-        if (
-          data[y][x] !== 0 ||
-          data[y][x + 1] !== 0 ||
-          data[y + 1][x] !== 0 ||
-          data[y + 1][x + 1] !== 0
-        ) {
-          indices.push(a, b, d);
-          indices.push(a, d, c);
+        const pos1 = getPosition(x, y);
+        const pos2 = getPosition(x + 1, y);
+        if (pos1 && pos2) {
+          linesArray.push(pos1, pos2);
         }
       }
     }
 
-    geo.setIndex(indices);
-    geo.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
-    geo.computeVertexNormals();
+    // Connect points vertically
+    for (let x = 0; x < size; x++) {
+      for (let y = 0; y < size - 1; y++) {
+        const pos1 = getPosition(x, y);
+        const pos2 = getPosition(x, y + 1);
+        if (pos1 && pos2) {
+          linesArray.push(pos1, pos2);
+        }
+      }
+    }
 
-    return geo;
+    return linesArray;
   }, [data, size, heightScale]);
 
+  const geometry = useMemo(
+    () => new THREE.BufferGeometry().setFromPoints(lines),
+    [lines]
+  );
+
   return (
-    <mesh geometry={geometry} position={position} scale={scale}>
-      <meshStandardMaterial
-        color="#4caf50"
-        side={THREE.DoubleSide}
-        wireframe
-        transparent
-        opacity={0.3}
-      />
-    </mesh>
+    <lineSegments geometry={geometry} position={position} scale={scale}>
+      <lineBasicMaterial color="#4caf50" opacity={0.3} transparent />
+    </lineSegments>
   );
 };
 
@@ -197,16 +192,24 @@ const HeightFunction: React.FC<HeightFunctionProps> = ({
 }) => {
   const [heightScale, setHeightScale] = useState(1);
 
-  const sceneConfig = {
-    cameraPosition: [1.5, 1.5, 1.5] as [number, number, number],
-    axesHelperScale: 1,
-    axesHelperPosition: [-0.5, 0, -0.5] as [number, number, number],
-    surfaceScale: 1,
-    dataPointsScale: 1,
-    cityGridScale: 0.11,
-    cityGridPosition: [0, 0, -2.3] as [number, number, number],
-    cityGridRotation: [Math.PI / 2, 0, 0] as [number, number, number],
-  };
+  const sceneConfig = useMemo(
+    () => ({
+      cameraPosition: [1.5, 1.5, 1.5] as [number, number, number],
+      axesHelperScale: 0.042 * (size - 24) + 1,
+      axesHelperPosition: [-0.5, 0, -0.5] as [number, number, number],
+      surfaceScale: 1,
+      dataPointsScale: 1,
+      cityGridScale: 0.11,
+      cityGridPosition: [0.0205 * (size - 24), 0, 2.325] as [
+        number,
+        number,
+        number
+      ],
+      cityGridRotation: [-Math.PI / 2, 0, 0] as [number, number, number],
+      dataPointsPosition: [0, 0, 0] as [number, number, number],
+    }),
+    [size]
+  );
 
   const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeightScale(parseFloat(event.target.value));
@@ -231,7 +234,7 @@ const HeightFunction: React.FC<HeightFunctionProps> = ({
         <CameraController position={sceneConfig.cameraPosition} />
         <ambientLight intensity={0.5} />
         <pointLight position={[5, 5, 5]} />
-        <Surface
+        <ConnectingLines
           data={data}
           size={size}
           scale={sceneConfig.surfaceScale}
@@ -242,6 +245,7 @@ const HeightFunction: React.FC<HeightFunctionProps> = ({
           size={size}
           scale={sceneConfig.dataPointsScale}
           heightScale={heightScale}
+          position={sceneConfig.dataPointsPosition}
         />
         <AxesHelper
           scale={sceneConfig.axesHelperScale}
@@ -262,6 +266,7 @@ const HeightFunction: React.FC<HeightFunctionProps> = ({
               isClear={isClear}
               setIsClear={setIsClear}
               simulationMode={simulationMode}
+              size={size}
             />
           </div>
         </Html>

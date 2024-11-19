@@ -16,7 +16,7 @@ calles = Calles([])
 
 particulas_agregadas = []
 ultimo_id = 0
-size= 50
+size= 40
 isStart = False
 mode = 'paralelo'
 simulation_running = True

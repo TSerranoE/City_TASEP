@@ -12,4 +12,5 @@ export interface CityGridProps {
   isClear: boolean;
   setIsClear: (isClear: boolean) => void;
   simulationMode: string;
+  size: number;
 }

@@ -12,16 +12,18 @@ function App() {
   const [simulationMode, setSimulationMode] = useState("Paralelo");
   const { DiccionarioFuncionAltura } = useReceiveSimulationData(isStart);
 
-  const generateDataPlot3D = useCallback(() => {
-    if (!DiccionarioFuncionAltura) return Array(25).fill(Array(25).fill(0));
+  const size = 100;
 
-    const data = Array(25)
+  const generateDataPlot3D = useCallback(() => {
+    if (!DiccionarioFuncionAltura) return Array(size).fill(Array(size).fill(0));
+
+    const data = Array(size)
       .fill(null)
-      .map(() => Array(25).fill(0));
+      .map(() => Array(size).fill(0));
 
     Object.entries(DiccionarioFuncionAltura).forEach(([key, value]) => {
       const [x, y] = key.split(",").map(Number);
-      if (x < 25 && y < 25) {
+      if (x < size && y < size) {
         data[y][x] = value || 0;
       }
     });
@@ -40,6 +42,7 @@ function App() {
           isClear={isClear}
           setIsClear={setIsClear}
           simulationMode={simulationMode}
+          size={size}
         />
         <SimulationControls
           isStart={isStart}
@@ -51,7 +54,7 @@ function App() {
       <div className={styles.heightFunctionContainer}>
         <HeightFunction
           data={generateDataPlot3D()}
-          size={25}
+          size={size}
           clickedLines={clickedLines}
           isStart={isStart}
           isClear={isClear}
