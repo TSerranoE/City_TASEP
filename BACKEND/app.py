@@ -24,6 +24,7 @@ step = 5
 cantidad_inicial = 100
 simulation_paused = threading.Event()
 simulation_paused.set() 
+velocidad = 0.5
 #data_lock = threading.Lock()
 
 def run_simulation(calles):
@@ -33,7 +34,7 @@ def run_simulation(calles):
         if not isStart:
             time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
             continue
-        time.sleep(0.5)
+        time.sleep(1.1-velocidad)
         #global particulas_agregadas
         #particulas_agregadas = calles.agregar_particulas_inicio(id, p=0.6)
         #if len(particulas_agregadas) != 0:
@@ -53,16 +54,18 @@ simulation_thread.start()
 
 @app.route('/update_data', methods=['POST'])
 def update_data():
-    global size, isStart, simulation_paused, mode, step, cantidad_inicial,  ultimo_id, particulas_agregadas
+    global size, isStart, simulation_paused, mode, step, cantidad_inicial,  ultimo_id, particulas_agregadas, velocidad
     data = request.json
     extreme_points = data['calles']
     size = data['size']
     isStart = data['isStart']
     isClear = data['isClear']
     mode = data['mode']
-    #step = data['step']
-    #cantidad_inicial = data['cantidad_inicial']
-    print(isClear)
+    step = data['step']
+    cantidad_inicial = data['cantidad_inicial']
+    velocidad = data['velocidad']
+
+    print(step, cantidad_inicial, velocidad)
     if isStart:
         simulation_paused.set()  # Reanudar la simulación
     else:
@@ -151,7 +154,6 @@ def get_state():
                 else:
                     diccionario_funcion_altura[str(x)+','+str(y)] = calle.altura[y]
         
-    print(diccionario_funcion_altura)
 
 
 
