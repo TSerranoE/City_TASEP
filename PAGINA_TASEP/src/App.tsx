@@ -10,9 +10,9 @@ function App() {
   const [isStart, setIsStart] = useState(false);
   const [isClear, setIsClear] = useState(true);
   const [simulationMode, setSimulationMode] = useState("Paralelo");
-  const { DiccionarioFuncionAltura } = useReceiveSimulationData(isStart);
+  const [size, setSize] = useState(25);
 
-  const size = 25;
+  const { DiccionarioFuncionAltura } = useReceiveSimulationData(isStart);
 
   const generateDataPlot3D = useCallback(() => {
     if (!DiccionarioFuncionAltura) return Array(size).fill(Array(size).fill(0));
@@ -29,39 +29,40 @@ function App() {
     });
 
     return data;
-  }, [DiccionarioFuncionAltura]);
+  }, [DiccionarioFuncionAltura, size]);
 
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>City Tasep</h1>
       <div className={styles.gridContainer}>
         <CityGrid
+          size={size}
           clickedLines={clickedLines}
           onClickedLinesUpdate={setClickedLines}
           isStart={isStart}
           isClear={isClear}
           setIsClear={setIsClear}
           simulationMode={simulationMode}
-          size={size}
         />
         <SimulationControls
           isStart={isStart}
           onStartToggle={() => setIsStart((prev) => !prev)}
           onModeChange={setSimulationMode}
+          size={size}
+          onSizeChange={(e) => setSize(Number(e.target.value))}
         />
       </div>
-      <h1 className={styles.title}>City Tasep 3D</h1>
+      <h1 className={styles.title}>Height Function</h1>
       <div className={styles.heightFunctionContainer}>
         <HeightFunction
           data={generateDataPlot3D()}
           size={size}
           clickedLines={clickedLines}
+          onClickedLinesUpdate={setClickedLines}
           isStart={isStart}
           isClear={isClear}
-          simulationMode={simulationMode}
-          onClickedLinesUpdate={setClickedLines}
           setIsClear={setIsClear}
-          isVerticalHover={false}
+          simulationMode={simulationMode}
         />
       </div>
     </div>

@@ -1,16 +1,32 @@
-export interface Car {
-  row: number;
-  col: number;
-  color: string;
-  id: string;
+import { CityGridProps } from "../CityGrid/types";
+
+export interface SceneElementProps {
+  position?: [number, number, number];
+  scale?: number | [number, number, number];
+  rotation?: [number, number, number];
 }
 
-export interface CityGridProps {
-  clickedLines: Set<string>;
-  onClickedLinesUpdate: (clickedLines: Set<string>) => void;
-  isStart: boolean;
-  isClear: boolean;
-  setIsClear: (isClear: boolean) => void;
-  simulationMode: string;
-  isVerticalHover: boolean;
+export interface HeightFunctionProps extends CityGridProps {
+  data: number[][];
+  size: number;
+}
+
+export interface GridOverlayProps extends CityGridProps {
+  position: [number, number, number];
+  rotation: [number, number, number];
+  scale: number;
+}
+
+export interface SceneConfig {
+  cameraPosition: [number, number, number];
+  axesHelperScale: number;
+  axesHelperPosition: [number, number, number];
+  surfaceScale: number;
+  dataPointsScale: number;
+  cityGridScale: number;
+  heightScale: number;
+  cityGridPosition: [number, number, number];
+  cityGridRotation: [number, number, number];
+  dataPointsPosition: [number, number, number];
+  surfacePosition: [number, number, number];
 }

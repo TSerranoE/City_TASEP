@@ -4,6 +4,8 @@
   align-items: center;
   padding: 2rem;
   background-color: #ffffff;
+  max-width: 100%; /* Asegurar que no exceda el ancho de la ventana */
+  margin: 0 auto;
 }
 
 .title {
@@ -46,11 +48,14 @@
   position: relative;
   display: inline-block;
 }
+
 .gridContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .formContainer {
@@ -64,8 +69,8 @@
 
 .heightFunctionContainer {
   width: 100%;
-  max-width: 1200px; /* Increased max-width */
+  min-width: 800px; /* Ancho mínimo para asegurar visibilidad */
+  max-width: 1600px; /* Ancho máximo para pantallas grandes */
   margin: 0 auto;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 0 1rem;
 }
