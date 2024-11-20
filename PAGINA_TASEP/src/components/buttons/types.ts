@@ -9,3 +9,8 @@ export interface StartButtonProps {
   onClick: () => void;
   isStart: boolean;
 }
+
+export interface ViewToggleButtonProps {
+  onClick: () => void;
+  showHeightFunction: boolean;
+}

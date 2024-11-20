@@ -4,4 +4,13 @@ export interface SimulationControlsProps {
   onModeChange: (mode: string) => void;
   size: number;
   onSizeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  hasStarted: boolean;
+  showHeightFunction: boolean;
+  onToggleView: () => void;
+  step: number;
+  onStepChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  velocity: number;
+  onVelocityChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  particles: number;
+  onParticlesChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }

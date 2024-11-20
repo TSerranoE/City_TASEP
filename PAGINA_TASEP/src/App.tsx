@@ -11,6 +11,11 @@ function App() {
   const [isClear, setIsClear] = useState(true);
   const [simulationMode, setSimulationMode] = useState("Paralelo");
   const [size, setSize] = useState(25);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [showHeightFunction, setShowHeightFunction] = useState(false);
+  const [step, setStep] = useState(1);
+  const [velocity, setVelocity] = useState(0.5);
+  const [particles, setParticles] = useState(1000);
 
   const { DiccionarioFuncionAltura } = useReceiveSimulationData(isStart);
 
@@ -31,38 +36,56 @@ function App() {
     return data;
   }, [DiccionarioFuncionAltura, size]);
 
+  const handleStartToggle = () => {
+    setIsStart((prev) => !prev);
+    if (!hasStarted) {
+      setHasStarted(true);
+    }
+  };
+
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>City Tasep</h1>
       <div className={styles.gridContainer}>
-        <CityGrid
-          size={size}
-          clickedLines={clickedLines}
-          onClickedLinesUpdate={setClickedLines}
-          isStart={isStart}
-          isClear={isClear}
-          setIsClear={setIsClear}
-          simulationMode={simulationMode}
-        />
+        {showHeightFunction ? (
+          <div className={styles.heightFunctionContainer}>
+            <HeightFunction
+              data={generateDataPlot3D()}
+              size={size}
+              clickedLines={clickedLines}
+              onClickedLinesUpdate={setClickedLines}
+              isStart={isStart}
+              isClear={isClear}
+              setIsClear={setIsClear}
+              simulationMode={simulationMode}
+            />
+          </div>
+        ) : (
+          <CityGrid
+            size={size}
+            clickedLines={clickedLines}
+            onClickedLinesUpdate={setClickedLines}
+            isStart={isStart}
+            isClear={isClear}
+            setIsClear={setIsClear}
+            simulationMode={simulationMode}
+          />
+        )}
         <SimulationControls
           isStart={isStart}
-          onStartToggle={() => setIsStart((prev) => !prev)}
+          onStartToggle={handleStartToggle}
           onModeChange={setSimulationMode}
           size={size}
           onSizeChange={(e) => setSize(Number(e.target.value))}
-        />
-      </div>
-      <h1 className={styles.title}>Height Function</h1>
-      <div className={styles.heightFunctionContainer}>
-        <HeightFunction
-          data={generateDataPlot3D()}
-          size={size}
-          clickedLines={clickedLines}
-          onClickedLinesUpdate={setClickedLines}
-          isStart={isStart}
-          isClear={isClear}
-          setIsClear={setIsClear}
-          simulationMode={simulationMode}
+          hasStarted={hasStarted}
+          showHeightFunction={showHeightFunction}
+          onToggleView={() => setShowHeightFunction((prev) => !prev)}
+          step={step}
+          onStepChange={(e) => setStep(Number(e.target.value))}
+          velocity={velocity}
+          onVelocityChange={(e) => setVelocity(Number(e.target.value))}
+          particles={particles}
+          onParticlesChange={(e) => setParticles(Number(e.target.value))}
         />
       </div>
     </div>

@@ -18,7 +18,7 @@ const CreateCar = ({ position, color, id, gridSize }: CreateCarProps) => {
   const [rotation, setRotation] = useState(() => {
     // If initial position is at col 0, it's moving horizontally (0 degrees)
     // If initial position is at row 0, it's moving vertically (-90 degrees)
-    return position.row === 0 ? 90 : 0;
+    return color === "red" ? 90 : 0;
   });
 
   useEffect(() => {
