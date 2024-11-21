@@ -49,7 +49,7 @@ export default function SimulationControls({
               value={step}
               onChange={onStepChange}
               min={1}
-              max={100}
+              max={50}
               step={1}
             />
             <Slider
@@ -57,7 +57,7 @@ export default function SimulationControls({
               value={particles}
               onChange={onParticlesChange}
               min={0}
-              max={1000}
+              max={400}
               step={10}
             />
             <Slider
@@ -65,7 +65,7 @@ export default function SimulationControls({
               value={size}
               onChange={onSizeChange}
               min={1}
-              max={100}
+              max={50}
               step={1}
             />
             <Slider

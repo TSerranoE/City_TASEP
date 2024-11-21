@@ -39,6 +39,7 @@ def run_simulation(calles):
         #particulas_agregadas = calles.agregar_particulas_inicio(id, p=0.6)
         #if len(particulas_agregadas) != 0:
             #id = particulas_agregadas[-1].id + 1
+        calles.update_bloqueos()
         if mode == 'secuencial': 
             calles.update_secuencial(0.5)
         else:
@@ -96,10 +97,10 @@ def update_data():
                     ultimo_id += 1
 
                 posicion -= step
-            calle.iniciar_altura(-size, size)
+            calle.iniciar_altura(-size*2, size*2)
+            calle.update_bloqueo()
             calles.add_calle(calle)
             calles.update_intersecciones()
-            calle.update_bloqueo()
         calles.update_intersecciones()
     return jsonify({"status": "success", "message": "Data received successfully"})
 
