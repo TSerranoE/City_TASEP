@@ -42,7 +42,10 @@ class Calle(list):
         dict={}
         
         for u in range(Min, Max+1):
-            dict[u]=2*(self.inversa(u-1)-inv)+u
+            try:
+                dict[u]=2*(self.inversa(u-1)-inv)+u
+            except:
+                dict[u]=0
         self.altura=dict
         self.inv=inv
     
