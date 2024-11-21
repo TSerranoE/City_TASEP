@@ -20,6 +20,7 @@ const HeightFunction: React.FC<HeightFunctionProps> = ({
   step,
   cantidad_inicial,
   velocidad,
+  densityInit,
 }) => {
   const sceneConfig = useSceneConfig(size);
 
@@ -65,6 +66,7 @@ const HeightFunction: React.FC<HeightFunctionProps> = ({
           step={step}
           cantidad_inicial={cantidad_inicial}
           velocidad={velocidad}
+          densityInit={densityInit}
         />
       </Canvas>
     </div>

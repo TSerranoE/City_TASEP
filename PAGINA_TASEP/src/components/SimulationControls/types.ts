@@ -13,4 +13,6 @@ export interface SimulationControlsProps {
   onVelocityChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   particles: number;
   onParticlesChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  densityInit: number;
+  onDensityInitChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }

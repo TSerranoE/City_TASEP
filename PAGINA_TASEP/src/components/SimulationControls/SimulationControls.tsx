@@ -19,6 +19,8 @@ export default function SimulationControls({
   onVelocityChange,
   particles,
   onParticlesChange,
+  densityInit,
+  onDensityInitChange,
 }: SimulationControlsProps) {
   return (
     <div className={styles.controls}>
@@ -55,7 +57,7 @@ export default function SimulationControls({
               value={particles}
               onChange={onParticlesChange}
               min={0}
-              max={10000}
+              max={1000}
               step={10}
             />
             <Slider
@@ -64,6 +66,14 @@ export default function SimulationControls({
               onChange={onSizeChange}
               min={1}
               max={100}
+              step={1}
+            />
+            <Slider
+              title="Density"
+              value={densityInit}
+              onChange={onDensityInitChange}
+              min={-1}
+              max={size + 1}
               step={1}
             />
           </>

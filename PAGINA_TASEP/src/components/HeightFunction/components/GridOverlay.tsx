@@ -17,6 +17,7 @@ export const GridOverlay: React.FC<GridOverlayProps> = ({
   step,
   cantidad_inicial,
   velocidad,
+  densityInit,
 }) => {
   return (
     <Html
@@ -38,6 +39,7 @@ export const GridOverlay: React.FC<GridOverlayProps> = ({
           step={step}
           cantidad_inicial={cantidad_inicial}
           velocidad={velocidad}
+          densityInit={densityInit}
         />
       </div>
     </Html>

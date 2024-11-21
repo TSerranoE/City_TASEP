@@ -17,6 +17,7 @@ export default function CityGrid({
   step,
   cantidad_inicial,
   velocidad,
+  densityInit,
 }: CityGridProps) {
   const [hasStarted, setHasStarted] = useState(false);
   const { cars } = useReceiveSimulationData(isStart, velocidad);
@@ -31,6 +32,7 @@ export default function CityGrid({
     step,
     cantidad_inicial,
     velocidad,
+    densityInit,
   });
 
   // Update hasStarted when simulation starts for the first time

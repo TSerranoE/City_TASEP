@@ -64,6 +64,7 @@ def update_data():
     step = data['step']
     cantidad_inicial = data['cantidad_inicial']
     velocidad = data['velocidad']
+    density_init = data['densityInit']
 
     print(step, cantidad_inicial, velocidad)
     if isStart:

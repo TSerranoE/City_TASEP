@@ -16,4 +16,5 @@ export interface CityGridProps {
   step: number;
   cantidad_inicial: number;
   velocidad: number;
+  densityInit: number;
 }

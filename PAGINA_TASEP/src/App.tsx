@@ -16,6 +16,7 @@ function App() {
   const [step, setStep] = useState(5);
   const [velocity, setVelocity] = useState(0.5);
   const [particles, setParticles] = useState(100);
+  const [densityInit, setDensityInit] = useState(-1);
 
   const { DiccionarioFuncionAltura } = useReceiveSimulationData(
     isStart,
@@ -64,6 +65,7 @@ function App() {
               step={step}
               cantidad_inicial={particles}
               velocidad={velocity}
+              densityInit={densityInit}
             />
           </div>
         ) : (
@@ -78,6 +80,7 @@ function App() {
             step={step}
             cantidad_inicial={particles}
             velocidad={velocity}
+            densityInit={densityInit}
           />
         )}
         <SimulationControls
@@ -95,6 +98,8 @@ function App() {
           onVelocityChange={(e) => setVelocity(Number(e.target.value))}
           particles={particles}
           onParticlesChange={(e) => setParticles(Number(e.target.value))}
+          densityInit={densityInit}
+          onDensityInitChange={(e) => setDensityInit(Number(e.target.value))}
         />
       </div>
     </div>

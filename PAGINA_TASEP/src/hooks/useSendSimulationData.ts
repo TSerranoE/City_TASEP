@@ -11,6 +11,7 @@ interface UseSendSimulationDataProps {
   step: number;
   cantidad_inicial: number;
   velocidad: number;
+  densityInit: number;
 }
 
 export function useSendSimulationData({
@@ -23,6 +24,7 @@ export function useSendSimulationData({
   step,
   cantidad_inicial,
   velocidad,
+  densityInit,
 }: UseSendSimulationDataProps) {
   useEffect(() => {
     const sendData = async () => {
@@ -40,6 +42,7 @@ export function useSendSimulationData({
             step,
             cantidad_inicial,
             velocidad,
+            densityInit,
           }),
         });
         if (isClear) {
