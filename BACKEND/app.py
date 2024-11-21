@@ -97,7 +97,7 @@ def update_data():
                     ultimo_id += 1
 
                 posicion -= step
-            calle.iniciar_altura(-2000, 2000)
+            calle.iniciar_altura(-size*2, size*2)
             calle.update_bloqueo()
             calles.add_calle(calle)
             calles.update_intersecciones()
