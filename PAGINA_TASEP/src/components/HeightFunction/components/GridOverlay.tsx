@@ -14,6 +14,9 @@ export const GridOverlay: React.FC<GridOverlayProps> = ({
   isClear,
   setIsClear,
   simulationMode,
+  step,
+  cantidad_inicial,
+  velocidad,
 }) => {
   return (
     <Html
@@ -32,6 +35,9 @@ export const GridOverlay: React.FC<GridOverlayProps> = ({
           isClear={isClear}
           setIsClear={setIsClear}
           simulationMode={simulationMode}
+          step={step}
+          cantidad_inicial={cantidad_inicial}
+          velocidad={velocidad}
         />
       </div>
     </Html>

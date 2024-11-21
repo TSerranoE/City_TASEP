@@ -24,7 +24,22 @@ export default function SimulationControls({
     <div className={styles.controls}>
       <StartButton onClick={onStartToggle} isStart={isStart} />
 
+      <div className={styles.controlsRow}>
+        <ViewToggleButton
+          onClick={onToggleView}
+          showHeightFunction={showHeightFunction}
+        />
+        <TripleSwitch onChange={onModeChange} />
+      </div>
       <div className={styles.slidersContainer}>
+        <Slider
+          title="Velocity"
+          value={velocity}
+          onChange={onVelocityChange}
+          min={0.1}
+          max={1}
+          step={0.01}
+        />
         {!hasStarted && (
           <>
             <Slider
@@ -43,36 +58,17 @@ export default function SimulationControls({
               max={10000}
               step={10}
             />
+            <Slider
+              title="Grid Size"
+              value={size}
+              onChange={onSizeChange}
+              min={1}
+              max={100}
+              step={1}
+            />
           </>
         )}
-        <Slider
-          title="Velocity"
-          value={velocity}
-          onChange={onVelocityChange}
-          min={0.1}
-          max={1}
-          step={0.01}
-        />
       </div>
-
-      <div className={styles.controlsRow}>
-        <ViewToggleButton
-          onClick={onToggleView}
-          showHeightFunction={showHeightFunction}
-        />
-        <TripleSwitch onChange={onModeChange} />
-      </div>
-
-      {!hasStarted && (
-        <Slider
-          title="Grid Size"
-          value={size}
-          onChange={onSizeChange}
-          min={1}
-          max={100}
-          step={1}
-        />
-      )}
     </div>
   );
 }

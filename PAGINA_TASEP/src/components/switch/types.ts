@@ -1,4 +1,4 @@
-export type Position = "left" | "center" | "right";
+export type Position = "left" | "right";
 
 export interface TripleSwitchProps {
   onChange?: (value: string) => void;

@@ -2,7 +2,7 @@ export interface ButtonProps {
   onClick: () => void;
   isActive?: boolean;
   children: React.ReactNode;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "tertiary";
 }
 
 export interface StartButtonProps {

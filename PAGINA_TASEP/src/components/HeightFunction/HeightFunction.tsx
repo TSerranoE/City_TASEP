@@ -17,6 +17,9 @@ const HeightFunction: React.FC<HeightFunctionProps> = ({
   isClear,
   setIsClear,
   simulationMode,
+  step,
+  cantidad_inicial,
+  velocidad,
 }) => {
   const sceneConfig = useSceneConfig(size);
 
@@ -59,6 +62,9 @@ const HeightFunction: React.FC<HeightFunctionProps> = ({
           isClear={isClear}
           setIsClear={setIsClear}
           simulationMode={simulationMode}
+          step={step}
+          cantidad_inicial={cantidad_inicial}
+          velocidad={velocidad}
         />
       </Canvas>
     </div>

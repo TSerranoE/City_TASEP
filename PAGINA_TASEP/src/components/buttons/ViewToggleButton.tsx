@@ -6,7 +6,7 @@ const ViewToggleButton = ({
   showHeightFunction,
 }: ViewToggleButtonProps) => {
   return (
-    <Button onClick={onClick} isActive={showHeightFunction} variant="secondary">
+    <Button onClick={onClick} isActive={showHeightFunction} variant="tertiary">
       {showHeightFunction ? "Show Grid" : "Height Function"}
     </Button>
   );

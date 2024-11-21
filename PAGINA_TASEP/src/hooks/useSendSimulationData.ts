@@ -8,6 +8,9 @@ interface UseSendSimulationDataProps {
   isClear: boolean;
   setIsClear: (value: boolean) => void;
   mode: string;
+  step: number;
+  cantidad_inicial: number;
+  velocidad: number;
 }
 
 export function useSendSimulationData({
@@ -17,6 +20,9 @@ export function useSendSimulationData({
   isClear,
   setIsClear,
   mode,
+  step,
+  cantidad_inicial,
+  velocidad,
 }: UseSendSimulationDataProps) {
   useEffect(() => {
     const sendData = async () => {
@@ -31,6 +37,9 @@ export function useSendSimulationData({
             isStart,
             isClear: isClear,
             mode: mode.toLowerCase(),
+            step,
+            cantidad_inicial,
+            velocidad,
           }),
         });
         if (isClear) {
@@ -42,5 +51,5 @@ export function useSendSimulationData({
     };
 
     sendData();
-  }, [isStart, size, mode]);
+  }, [isStart, mode, velocidad]);
 }

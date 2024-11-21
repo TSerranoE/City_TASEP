@@ -3,4 +3,5 @@ export interface CreateCarProps {
   color: string;
   id: string;
   gridSize: number;
+  velocidad: number;
 }

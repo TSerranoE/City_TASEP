@@ -1,7 +1,8 @@
 .switchContainer {
   display: flex;
   justify-content: center;
-  width: 240px;
+  margin-top: 2rem;
+  width: 250px;
   height: 50px;
   border-radius: 25px;
   background-color: #f0f0f0;
@@ -11,8 +12,8 @@
 
 .switch {
   height: 44px;
-  width: 116px;
-  background-color: #90a4ae;
+  width: 80px;
+  background-color: #4caf50;
   border-radius: 25px;
   position: absolute;
   left: 3px;
@@ -20,8 +21,12 @@
   transition: left 0.3s ease-in-out;
 }
 
+.switch.center {
+  left: 85px;
+}
+
 .switch.right {
-  left: 121px;
+  left: 167px;
 }
 
 .labels {

@@ -13,11 +13,14 @@ function App() {
   const [size, setSize] = useState(25);
   const [hasStarted, setHasStarted] = useState(false);
   const [showHeightFunction, setShowHeightFunction] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(5);
   const [velocity, setVelocity] = useState(0.5);
-  const [particles, setParticles] = useState(1000);
+  const [particles, setParticles] = useState(100);
 
-  const { DiccionarioFuncionAltura } = useReceiveSimulationData(isStart);
+  const { DiccionarioFuncionAltura } = useReceiveSimulationData(
+    isStart,
+    velocity
+  );
 
   const generateDataPlot3D = useCallback(() => {
     if (!DiccionarioFuncionAltura) return Array(size).fill(Array(size).fill(0));
@@ -58,6 +61,9 @@ function App() {
               isClear={isClear}
               setIsClear={setIsClear}
               simulationMode={simulationMode}
+              step={step}
+              cantidad_inicial={particles}
+              velocidad={velocity}
             />
           </div>
         ) : (
@@ -69,6 +75,9 @@ function App() {
             isClear={isClear}
             setIsClear={setIsClear}
             simulationMode={simulationMode}
+            step={step}
+            cantidad_inicial={particles}
+            velocidad={velocity}
           />
         )}
         <SimulationControls

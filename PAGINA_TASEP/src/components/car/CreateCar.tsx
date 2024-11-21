@@ -1,9 +1,17 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { carImages } from "./cars";
 import type { CreateCarProps } from "./types";
 import styles from "./styles.module.css";
 
-const CreateCar = ({ position, color, id, gridSize }: CreateCarProps) => {
+export default function CreateCar({
+  position,
+  color,
+  id,
+  gridSize,
+  velocidad,
+}: CreateCarProps) {
   // Don't render if position is negative
   if (position.row < 0 || position.col < 0) {
     return null;
@@ -36,12 +44,12 @@ const CreateCar = ({ position, color, id, gridSize }: CreateCarProps) => {
           if (carRef.current) {
             carRef.current.style.display = "none";
           }
-        }, 500);
+        }, (1.2 - velocidad) * 1000);
         return;
       }
 
-      carRef.current.style.transition =
-        "left 0.5s ease-in-out, bottom 0.5s ease-in-out, transform 0.5s ease-in-out, opacity 0.5s ease-in-out";
+      const transitionDuration = `${1.3 - velocidad}s`;
+      carRef.current.style.transition = `left ${transitionDuration} ease-in-out, bottom ${transitionDuration} ease-in-out, transform ${transitionDuration} ease-in-out, opacity ${transitionDuration} ease-in-out`;
       carRef.current.style.left = `${position.col * 15}px`;
       carRef.current.style.bottom = `${(gridSize - 1 - position.row) * 15}px`;
 
@@ -63,7 +71,7 @@ const CreateCar = ({ position, color, id, gridSize }: CreateCarProps) => {
 
       setPrevPosition(position);
     }
-  }, [position, prevPosition, rotation, gridSize]);
+  }, [position, prevPosition, rotation, gridSize, velocidad]);
 
   return (
     <div
@@ -81,6 +89,4 @@ const CreateCar = ({ position, color, id, gridSize }: CreateCarProps) => {
       />
     </div>
   );
-};
-
-export default CreateCar;
+}

@@ -7,13 +7,7 @@ const TripleSwitch = ({ onChange }: TripleSwitchProps) => {
 
   const handleChange = (newPosition: Position) => {
     setPosition(newPosition);
-    onChange?.(
-      newPosition === "left"
-        ? "Paralelo"
-        : newPosition === "center"
-        ? "Secuencial"
-        : "Continuo"
-    );
+    onChange?.(newPosition === "left" ? "Paralelo" : "Secuencial");
   };
 
   return (
@@ -39,23 +33,6 @@ const TripleSwitch = ({ onChange }: TripleSwitchProps) => {
 
         <input
           type="radio"
-          id="center"
-          name="switch"
-          className={styles.input}
-          checked={position === "center"}
-          onChange={() => handleChange("center")}
-        />
-        <label
-          htmlFor="center"
-          className={`${styles.label} ${
-            position === "center" ? styles.active : ""
-          }`}
-        >
-          Secuencial
-        </label>
-
-        <input
-          type="radio"
           id="right"
           name="switch"
           className={styles.input}
@@ -68,7 +45,7 @@ const TripleSwitch = ({ onChange }: TripleSwitchProps) => {
             position === "right" ? styles.active : ""
           }`}
         >
-          Continuo
+          Secuencial
         </label>
       </div>
     </div>

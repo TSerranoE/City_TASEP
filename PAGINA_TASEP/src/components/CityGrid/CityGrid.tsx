@@ -14,9 +14,12 @@ export default function CityGrid({
   setIsClear,
   simulationMode,
   size,
+  step,
+  cantidad_inicial,
+  velocidad,
 }: CityGridProps) {
   const [hasStarted, setHasStarted] = useState(false);
-  const { cars } = useReceiveSimulationData(isStart);
+  const { cars } = useReceiveSimulationData(isStart, velocidad);
 
   useSendSimulationData({
     clickedLines,
@@ -25,6 +28,9 @@ export default function CityGrid({
     isClear,
     setIsClear,
     mode: simulationMode,
+    step,
+    cantidad_inicial,
+    velocidad,
   });
 
   // Update hasStarted when simulation starts for the first time
@@ -47,6 +53,7 @@ export default function CityGrid({
           color={car.color}
           id={car.id}
           gridSize={size}
+          velocidad={velocidad}
         />
       ))}
     </div>

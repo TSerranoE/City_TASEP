@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Car } from "../components/CityGrid/types";
 
-export function useReceiveSimulationData(isStart: boolean) {
+export function useReceiveSimulationData(isStart: boolean, velocidad: number) {
   const [cars, setCars] = useState<Car[]>([]);
   const [DiccionarioFuncionAltura, setDiccionarioFuncionAltura] = useState<any>(
     []
@@ -43,7 +43,7 @@ export function useReceiveSimulationData(isStart: boolean) {
       }
     };
 
-    const intervalId = setInterval(fetchState, 500);
+    const intervalId = setInterval(fetchState, (1.3 - velocidad) * 1000);
     return () => clearInterval(intervalId);
   }, [isStart]);
 

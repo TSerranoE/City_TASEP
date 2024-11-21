@@ -34,7 +34,7 @@ def run_simulation(calles):
         if not isStart:
             time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
             continue
-        time.sleep(1.1-velocidad)
+        time.sleep(1.3-velocidad)
         #global particulas_agregadas
         #particulas_agregadas = calles.agregar_particulas_inicio(id, p=0.6)
         #if len(particulas_agregadas) != 0:
