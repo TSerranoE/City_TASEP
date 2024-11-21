@@ -80,7 +80,7 @@ def update_data():
             direccion, posicion = extreme_point.split(";")
             calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
             # Densidad 
-            posicion = -1
+            posicion = density_init
             for i in range(cantidad_inicial):
                 particula = Particula(id=ultimo_id, posicion=posicion, calle=calle, bloqueado=True)
                 calle.insert(0, particula)
