@@ -43,7 +43,7 @@ def run_simulation(calles):
             calles.update_secuencial(0.5)
         else:
             calles.update_paralelo(0.5)
-        calles.delete_particulas_posicion(size)
+        #calles.delete_particulas_posicion(size)
         #for particula in particulas_agregadas:
         #   if particula.posicion > size:
         #       particulas_agregadas.remove(particula)
@@ -81,15 +81,25 @@ def update_data():
             calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
             # Densidad 
             posicion = density_init
-            for i in range(cantidad_inicial):
-                particula = Particula(id=ultimo_id, posicion=posicion, calle=calle, bloqueado=True)
-                calle.insert(0, particula)
-                particulas_agregadas.append(particula)
-                ultimo_id += 1
+            for _ in range(cantidad_inicial):
+
+                se_puede_poner = True
+
+                for otra_calle in calles.calles:
+                    if otra_calle.posicion == posicion and otra_calle.direccion == 1 - int(direccion):
+                        se_puede_poner = False
+
+                if se_puede_poner:
+                    particula = Particula(id=ultimo_id, posicion=posicion, calle=calle, bloqueado=True)
+                    calle.insert(0, particula)
+                    particulas_agregadas.append(particula)
+                    ultimo_id += 1
+
                 posicion -= step
             calle.iniciar_altura(-size, size)
-            calle.update_bloqueo()
             calles.add_calle(calle)
+            calles.update_intersecciones()
+            calle.update_bloqueo()
         calles.update_intersecciones()
     return jsonify({"status": "success", "message": "Data received successfully"})
 
