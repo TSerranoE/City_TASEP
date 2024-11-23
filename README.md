@@ -1,7 +1,8 @@
 # City TASEP
 
-Este proyecto cuenta con licencia conforme a los términos de la licencia MIT
+![hola](https://github.com/user-attachments/assets/d0e9516e-ee08-4724-9d66-de633889624a)
 
+(Este proyecto cuenta con licencia conforme a los términos de la licencia MIT)
 ___
 ## Como ejecutar el sandbox:
 
@@ -64,15 +65,7 @@ Las partículas se actualizan sucesivamente en orden decreciente según su posic
 Para modelar el sistema, se implementó un conjunto de clases que representan partículas, calles e intersecciones, incorporando todos los parámetros relevantes del TASEP. Las actualizaciones se simulan mediante iteraciones sobre las partículas, siguiendo las reglas del método de actualización (secuencial o paralelo). En el caso de intersecciones, se bloquea el avance de una partícula si intenta moverse a una posición ocupada por otra partícula proveniente de otra calle.
 
 Un aspecto clave del análisis es el *proceso de crecimiento*, definido como una función de altura $h(t)$, con valores en $\mathbb{Z}^\mathbb{Z}$. La altura se inicializa como:
-
-$$
-h(0, i) =
-\begin{cases}
-0 & \text{si } i = 0, \\
-h(0, i-1) - 1 & \text{si } i > 0, \\
-h(0, i+1) + 1 & \text{si } i < 0.
-\end{cases}
-$$
+$h(0, i)=0$ si $i=0, h(0, i-1)-1$ si $i>0$ y $h(0, i+1)+1$ si $i<0$.
 
 En cada paso, la altura se incrementa en $1$ en las posiciones donde una partícula avanza, manteniéndose constante en las posiciones donde no ocurre movimiento.
 
