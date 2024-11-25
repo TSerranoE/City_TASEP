@@ -10,13 +10,13 @@ function App() {
   const [isStart, setIsStart] = useState(false);
   const [isClear, setIsClear] = useState(true);
   const [simulationMode, setSimulationMode] = useState("Paralelo");
-  const [size, setSize] = useState(25);
+  const [size, setSize] = useState(30);
   const [hasStarted, setHasStarted] = useState(false);
   const [showHeightFunction, setShowHeightFunction] = useState(false);
-  const [step, setStep] = useState(5);
+  const [step, setStep] = useState(3);
   const [velocity, setVelocity] = useState(0.5);
   const [particles, setParticles] = useState(100);
-  const [densityInit, setDensityInit] = useState(-1);
+  const [densityInit, setDensityInit] = useState(10);
 
   const { DiccionarioFuncionAltura } = useReceiveSimulationData(
     isStart,
