@@ -12,7 +12,7 @@ export function useReceiveSimulationData(isStart: boolean, velocidad: number) {
 
     const fetchState = async () => {
       try {
-        const response = await fetch("http://localhost:5000/state");
+        const response = await fetch("https://city-tasep.onrender.com/state");
         const data = await response.json();
         setDiccionarioFuncionAltura(data.diccionario_funcion_altura);
         // Handle new cars

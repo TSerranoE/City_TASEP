@@ -30,7 +30,7 @@ export function useSendSimulationData({
     const sendData = async () => {
       try {
         const { calles } = calculateRowAndCols(clickedLines);
-        await fetch("http://localhost:5000/update_data", {
+        await fetch("https://city-tasep.onrender.com/update_data", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

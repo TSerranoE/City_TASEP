@@ -4,7 +4,7 @@ import time
 import threading
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://city-tasep-simulation.vercel.app/"}})
 
 from Calle import Calle
 from Interseccion import Interseccion
