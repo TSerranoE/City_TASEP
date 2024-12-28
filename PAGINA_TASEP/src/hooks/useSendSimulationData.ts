@@ -36,7 +36,7 @@ export function useSendSimulationData({
           body: JSON.stringify({
             calles: Array.from(calles),
             size,
-            isStart,
+            isStart: true,
             isClear: isClear,
             mode: mode.toLowerCase(),
             step,
