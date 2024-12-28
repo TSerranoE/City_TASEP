@@ -67,7 +67,7 @@ def update_data():
     velocidad = data['velocidad']
     density_init = data['densityInit']
 
-    print(step, cantidad_inicial, velocidad)
+    print("isClear: ${isStart}", "isClear: ${isClear}", "velocidad ${velocidad}")
     if isStart:
         simulation_paused.set()  # Reanudar la simulación
     else:

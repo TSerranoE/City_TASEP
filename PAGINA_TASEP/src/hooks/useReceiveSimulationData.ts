@@ -46,6 +46,7 @@ export function useReceiveSimulationData(isStart: boolean, velocidad: number) {
     const intervalId = setInterval(fetchState, (1.3 - velocidad) * 1000);
     return () => clearInterval(intervalId);
   }, [isStart]);
-
+  console.log(cars);
+  console.log(DiccionarioFuncionAltura);
   return { cars, DiccionarioFuncionAltura };
 }
