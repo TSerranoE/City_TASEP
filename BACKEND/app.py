@@ -28,13 +28,16 @@ lock = threading.Lock()  # Añadir un Lock para sincronización
 
 def run_simulation(calles):
     while simulation_running:
-        print(f"isStart: {isStart}")  # Log de depuración
-        print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
-        simulation_paused.wait()
-        if not isStart:
-            print("Simulation not started yet...")  # Log de depuración
-            time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
-            continue
+
+        
+        with lock:
+            print(f"isStart: {isStart}")  # Log de depuración
+            print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
+            simulation_paused.wait()
+            if not isStart:
+                print("Simulation not started yet...")  # Log de depuración
+                time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
+                continue
         time.sleep(1.3 - velocidad)
         print("Running simulation step...")  # Log de depuración
         calles.update_bloqueos()
