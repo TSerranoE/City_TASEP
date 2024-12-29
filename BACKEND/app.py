@@ -29,8 +29,11 @@ def run_simulation(calles):
     global particulas_agregadas
     print("Simulation thread started...")  # Log de depuración
     while simulation_running:
+        print(f"simulation_running: {simulation_running}")  # Log de depuración
         simulation_paused.wait()  # Espera si está en pausa
+        print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
         if not isStart:
+            print("Simulation not started yet...")  # Log de depuración
             time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
             continue
         time.sleep(1.3 - velocidad)
@@ -42,6 +45,7 @@ def run_simulation(calles):
             calles.update_paralelo(0.5)
 
 simulation_thread = threading.Thread(target=run_simulation, args=(calles,))
+print("Simulation thread created...")  # Log de depuración
 simulation_thread.start()
 
 @app.route('/update_data', methods=['POST'])
@@ -61,8 +65,10 @@ def update_data():
     print(f"step: {step}, cantidad_inicial: {cantidad_inicial}, velocidad: {velocidad}")  # Log de depuración
     if isStart:
         simulation_paused.set()  # Reanudar la simulación
+        print("Simulation resumed")  # Log de depuración
     else:
         simulation_paused.clear()  # Pausar la simulación
+        print("Simulation paused")  # Log de depuración
 
     if isClear or len(calles.calles) == 0:
         calles.vaciar_objeto()
@@ -145,14 +151,14 @@ def get_state():
         if direccion == 0:
             y = calle.posicion
             for x in range(size + 1):
-                if (x, y) in intersecciones.keys():
+                if (x, y) in intersecciones.keys()):
                     diccionario_funcion_altura[str(x) + ',' + str(y)] = max(intersecciones[(x, y)][1].altura[y], calle.altura[x])
                 else:
                     diccionario_funcion_altura[str(x) + ',' + str(y)] = calle.altura[x]
         else:
             x = calle.posicion
             for y in range(size + 1):
-                if (x, y) in intersecciones.keys():
+                if (x, y) in intersecciones.keys()):
                     diccionario_funcion_altura[str(x) + ',' + str(y)] = max(intersecciones[(x, y)][0].altura[x], calle.altura[y])
                 else:
                     diccionario_funcion_altura[str(x) + ',' + str(y)] = calle.altura[y]
