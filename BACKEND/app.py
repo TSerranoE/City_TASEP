@@ -24,14 +24,13 @@ cantidad_inicial = 100
 simulation_paused = threading.Event()
 simulation_paused.set()
 velocidad = 0.5
-
+lock = threading.Lock()  # Añadir un Lock para sincronización
 
 def run_simulation(calles):
-    global particulas_agregadas
     while simulation_running:
-        print(f"simulation_running: {simulation_running}")  # Log de depuración
-        simulation_paused.wait()  # Espera si está en pausa
+        print(f"isStart: {isStart}")  # Log de depuración
         print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
+        simulation_paused.wait()
         if not isStart:
             print("Simulation not started yet...")  # Log de depuración
             time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
@@ -53,7 +52,8 @@ def update_data():
     data = request.json
     extreme_points = data['calles']
     size = data['size']
-    isStart = data['isStart']
+    with lock:
+        isStart = data['isStart']
     isClear = data['isClear']
     mode = data['mode']
     step = data['step']
@@ -62,12 +62,13 @@ def update_data():
     density_init = data['densityInit']
     #print(f"isStart received: {isStart}")  # Log de depuración
     #print(f"step: {step}, cantidad_inicial: {cantidad_inicial}, velocidad: {velocidad}")  # Log de depuración
-    if isStart:
-        simulation_paused.clear()  # Reanudar la simulación
-        #print(f"Simulation resumed: {simulation_paused.is_set()}")  # Log de depuración
-    else:
-        simulation_paused.set()  # Pausar la simulación
-        #print(f"simulation Paused: {simulation_paused.is_set()}") # Log de depuración
+    with lock:
+        if isStart:
+            simulation_paused.clear()  # Reanudar la simulación
+            #print(f"Simulation resumed: {simulation_paused.is_set()}")  # Log de depuración
+        else:
+            simulation_paused.set()  # Pausar la simulación
+            #print(f"simulation Paused: {simulation_paused.is_set()}") # Log de depuración
 
     if isClear or len(calles.calles) == 0:
         calles.vaciar_objeto()
