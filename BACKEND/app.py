@@ -4,7 +4,7 @@ import time
 import threading
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 from Calle import Calle
 from Interseccion import Interseccion
@@ -39,6 +39,7 @@ def run_simulation(calles):
         #particulas_agregadas = calles.agregar_particulas_inicio(id, p=0.6)
         #if len(particulas_agregadas) != 0:
             #id = particulas_agregadas[-1].id + 1
+        print("Running simulation step...")  # Log de depuración
         calles.update_bloqueos()
         if mode == 'secuencial': 
             calles.update_secuencial(0.5)
@@ -66,8 +67,8 @@ def update_data():
     cantidad_inicial = data['cantidad_inicial']
     velocidad = data['velocidad']
     density_init = data['densityInit']
-
-    print(step, cantidad_inicial, velocidad)
+    print(f"isStart received: {isStart}")  # Log de depuración
+    print(f"step: {step}, cantidad_inicial: {cantidad_inicial}, velocidad: {velocidad}")  # Log de depuración
     if isStart:
         simulation_paused.set()  # Reanudar la simulación
     else:
