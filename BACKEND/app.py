@@ -65,10 +65,10 @@ def update_data():
     print(f"isStart received: {isStart}")  # Log de depuración
     #print(f"step: {step}, cantidad_inicial: {cantidad_inicial}, velocidad: {velocidad}")  # Log de depuración
     if isStart:
-        simulation_paused.set()  # Reanudar la simulación
+        simulation_paused.clear()  # Reanudar la simulación
         print(f"Simulation resumed: {simulation_paused.is_set()}")  # Log de depuración
     else:
-        simulation_paused.clear()  # Pausar la simulación
+        simulation_paused.set()  # Pausar la simulación
         print(f"simulation Paused: {simulation_paused.is_set()}") # Log de depuración
 
     if isClear or len(calles.calles) == 0:
