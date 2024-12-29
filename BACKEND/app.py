@@ -17,7 +17,6 @@ particulas_agregadas = []
 ultimo_id = 0
 size = 40
 isStart = False
-print(f"isStart: {isStart}")  # Log de depuración
 mode = 'paralelo'
 simulation_running = True
 step = 5
@@ -35,7 +34,7 @@ def run_simulation(calles):
         simulation_paused.wait()  # Espera si está en pausa
         #print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
         if not isStart:
-            print("Simulation not started yet...")  # Log de depuración
+            #print("Simulation not started yet...")  # Log de depuración
             time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
             continue
         time.sleep(1.3 - velocidad)
@@ -47,7 +46,7 @@ def run_simulation(calles):
             calles.update_paralelo(0.5)
 
 simulation_thread = threading.Thread(target=run_simulation, args=(calles,))
-#print("Simulation thread created...")  # Log de depuración
+print("Simulation thread created...")  # Log de depuración
 simulation_thread.start()
 
 @app.route('/update_data', methods=['POST'])
@@ -63,14 +62,14 @@ def update_data():
     cantidad_inicial = data['cantidad_inicial']
     velocidad = data['velocidad']
     density_init = data['densityInit']
-    #print(f"isStart received: {isStart}")  # Log de depuración
+    print(f"isStart received: {isStart}")  # Log de depuración
     #print(f"step: {step}, cantidad_inicial: {cantidad_inicial}, velocidad: {velocidad}")  # Log de depuración
     if isStart:
         simulation_paused.set()  # Reanudar la simulación
-        #print("Simulation resumed")  # Log de depuración
+        print(f"Simulation resumed: {simulation_paused.is_set()}")  # Log de depuración
     else:
         simulation_paused.clear()  # Pausar la simulación
-        #print("Simulation paused")  # Log de depuración
+        print(f"simulation Paused: {simulation_paused.is_set()}") # Log de depuración
 
     if isClear or len(calles.calles) == 0:
         calles.vaciar_objeto()
