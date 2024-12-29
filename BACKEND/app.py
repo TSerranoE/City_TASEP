@@ -28,12 +28,10 @@ lock = threading.Lock()  # Añadir un Lock para sincronización
 
 def run_simulation(calles):
     while simulation_running:
-
-        
+        simulation_paused.wait()
         with lock:
             print(f"isStart: {isStart}")  # Log de depuración
             print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
-            simulation_paused.wait()
             if not isStart:
                 print("Simulation not started yet...")  # Log de depuración
                 time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
