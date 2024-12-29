@@ -25,6 +25,7 @@ simulation_paused = threading.Event()
 simulation_paused.set()
 velocidad = 0.5
 
+
 def run_simulation(calles):
     global particulas_agregadas
     print("Simulation thread started...")  # Log de depuración
@@ -151,14 +152,14 @@ def get_state():
         if direccion == 0:
             y = calle.posicion
             for x in range(size + 1):
-                if (x, y) in intersecciones.keys()):
+                if (x, y) in intersecciones.keys():
                     diccionario_funcion_altura[str(x) + ',' + str(y)] = max(intersecciones[(x, y)][1].altura[y], calle.altura[x])
                 else:
                     diccionario_funcion_altura[str(x) + ',' + str(y)] = calle.altura[x]
         else:
             x = calle.posicion
             for y in range(size + 1):
-                if (x, y) in intersecciones.keys()):
+                if (x, y) in intersecciones.keys():
                     diccionario_funcion_altura[str(x) + ',' + str(y)] = max(intersecciones[(x, y)][0].altura[x], calle.altura[y])
                 else:
                     diccionario_funcion_altura[str(x) + ',' + str(y)] = calle.altura[y]
