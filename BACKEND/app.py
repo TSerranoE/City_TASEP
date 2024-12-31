@@ -28,18 +28,23 @@ lock = threading.Lock()  # Añadir un Lock para sincronización
 
 def run_simulation(calles):
     while simulation_running:
-        simulation_paused.wait()
         with lock:
-            print(f"isStart: {isStart}")  # Log de depuración
-            print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
-            if not isStart:
-                print("Simulation not started yet...")  # Log de depuración
-                time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
-                continue
-        time.sleep(1.3 - velocidad)
+            current_is_start = isStart
+            current_mode = mode
+            current_velocidad = velocidad
+            current_simulation_paused = simulation_paused
+        current_simulation_paused.wait()  # Espera si está en pausa
+        
+        print(f"isStart: {current_is_start}")  # Log de depuración
+        print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
+        if not current_is_start:
+            print("Simulation not started yet...")  # Log de depuración
+            time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
+            continue
+        time.sleep(1.3 - current_velocidad)
         print("Running simulation step...")  # Log de depuración
         calles.update_bloqueos()
-        if mode == 'secuencial':
+        if current_mode == 'secuencial':
             calles.update_secuencial(0.5)
         else:
             calles.update_paralelo(0.5)
