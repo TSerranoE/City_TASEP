@@ -13,58 +13,82 @@ from Calles import Calles
 
 calles = Calles([])
 
-
 particulas_agregadas = []
 ultimo_id = 0
-size= 40
-isStart = False
-mode = 'paralelo'
-simulation_running = True
-step = 5
-cantidad_inicial = 100
-simulation_paused = threading.Event()
-simulation_paused.set() 
-velocidad = 0.5
-#data_lock = threading.Lock()
 
-def run_simulation(calles, isStart, simulation_paused, mode, velocidad ):
-    while simulation_running:
-        simulation_paused.wait()  # Espera si está en pausa
-        if not isStart:
+class SimulationState:
+    def __init__(self):
+        self.size = 40
+        self.isStart = False
+        self.mode = 'paralelo'
+        self.simulation_running = True
+        self.step = 5
+        self.cantidad_inicial = 100
+        self.simulation_paused = threading.Event()
+        self.simulation_paused.set()
+        self.velocidad = 0.5
+        self.lock = threading.Lock()
+
+    def set_start(self, value):
+        with self.lock:
+            self.isStart = value
+            if value:
+                self.simulation_paused.set()  # Reanudar la simulación
+            else:
+                self.simulation_paused.clear()  # Pausar la simulación
+
+    def get_start(self):
+        with self.lock:
+            return self.isStart
+
+    def set_mode(self, value):
+        with self.lock:
+            self.mode = value
+
+    def get_mode(self):
+        with self.lock:
+            return self.mode
+
+    def set_velocidad(self, value):
+        with self.lock:
+            self.velocidad = value
+
+    def get_velocidad(self):
+        with self.lock:
+            return self.velocidad
+
+simulation_state = SimulationState()
+
+def run_simulation(calles, simulation_state):
+    while simulation_state.simulation_running:
+        simulation_state.simulation_paused.wait()  # Espera si está en pausa
+        if not simulation_state.get_start():
             time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
             continue
-        time.sleep(1.3-velocidad)
+        time.sleep(1.3 - simulation_state.get_velocidad())
 
         calles.update_bloqueos()
-        if mode == 'secuencial': 
+        if simulation_state.get_mode() == 'secuencial':
             calles.update_secuencial(0.5)
         else:
             calles.update_paralelo(0.5)
 
-        
-
-simulation_thread = threading.Thread(target=run_simulation, args=(calles, isStart, simulation_paused, mode, velocidad))
+simulation_thread = threading.Thread(target=run_simulation, args=(calles, simulation_state))
 simulation_thread.start()
 
 @app.route('/update_data', methods=['POST'])
 def update_data():
-    global size, isStart, simulation_paused, mode, step, cantidad_inicial,  ultimo_id, particulas_agregadas, velocidad
+    global size, ultimo_id, particulas_agregadas
     data = request.json
     extreme_points = data['calles']
-    size = data['size']
-    isStart = data['isStart']
+    simulation_state.size = data['size']
+    simulation_state.set_start(data['isStart'])
     isClear = data['isClear']
-    mode = data['mode']
-    step = data['step']
-    cantidad_inicial = data['cantidad_inicial']
-    velocidad = data['velocidad']
+    simulation_state.set_mode(data['mode'])
+    simulation_state.step = data['step']
+    simulation_state.cantidad_inicial = data['cantidad_inicial']
+    simulation_state.set_velocidad(data['velocidad'])
     density_init = data['densityInit']
-
-    print(step, cantidad_inicial, velocidad)
-    if isStart:
-        simulation_paused.set()  # Reanudar la simulación
-    else:
-        simulation_paused.clear()  # Pausar la simulación
 
     if isClear or len(calles.calles) == 0:
         calles.vaciar_objeto()
@@ -75,10 +99,8 @@ def update_data():
             calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
             # Densidad 
             posicion = density_init
-            for _ in range(cantidad_inicial):
-
+            for _ in range(simulation_state.cantidad_inicial):
                 se_puede_poner = True
-
                 for otra_calle in calles.calles:
                     if otra_calle.posicion == posicion and otra_calle.direccion == 1 - int(direccion):
                         se_puede_poner = False
@@ -89,8 +111,8 @@ def update_data():
                     particulas_agregadas.append(particula)
                     ultimo_id += 1
 
-                posicion -= step
-            calle.iniciar_altura(-size*2, size*2)
+                posicion -= simulation_state.step
+            calle.iniciar_altura(-simulation_state.size * 2, simulation_state.size * 2)
             calle.update_bloqueo()
             calles.add_calle(calle)
             calles.update_intersecciones()
@@ -99,10 +121,9 @@ def update_data():
 
 @app.route('/state', methods=['GET'])
 def get_state():
-    global isStart
-    if not isStart:
+    if not simulation_state.get_start():
         return jsonify({"status": "paused", "message": "Simulation is paused"})
-    
+
     diccionario_particulas_agregadas = {}
     for particula in particulas_agregadas:
         direccion = particula.calle.direccion
@@ -131,36 +152,33 @@ def get_state():
         else:
             fila = particula.calle.posicion
             columna = particula.posicion
-        if columna <= size and fila <= size:
+        if columna <= simulation_state.size and fila <= simulation_state.size:
             diccionario_particulas[particula.id] = {
                 'id': particula.id,
                 'new_row': fila,
                 'new_col': columna
             }
 
-    diccionario_funcion_altura = {str(x)+','+str(y): 0 for x in range(size+1) for y in range(size+1)}   
-        
+    diccionario_funcion_altura = {str(x) + ',' + str(y): 0 for x in range(simulation_state.size + 1) for y in range(simulation_state.size + 1)}
+
     for calle in calles.calles:
         calle.actualizar_altura()
         direccion = calle.direccion
         intersecciones = {interseccion.posicion: interseccion.calles for interseccion in calle.intersecciones}
         if direccion == 0:
             y = calle.posicion
-            for x in range(size+1):
+            for x in range(simulation_state.size + 1):
                 if (x, y) in intersecciones.keys():
-                    diccionario_funcion_altura[str(x)+','+str(y)] = max(intersecciones[(x, y)][1].altura[y], calle.altura[x])
+                    diccionario_funcion_altura[str(x) + ',' + str(y)] = max(intersecciones[(x, y)][1].altura[y], calle.altura[x])
                 else:
-                    diccionario_funcion_altura[str(x)+','+str(y)] = calle.altura[x]
+                    diccionario_funcion_altura[str(x) + ',' + str(y)] = calle.altura[x]
         else:
             x = calle.posicion
-            for y in range(size+1):
+            for y in range(simulation_state.size + 1):
                 if (x, y) in intersecciones.keys():
-                    diccionario_funcion_altura[str(x)+','+str(y)] = max(intersecciones[(x, y)][0].altura[x], calle.altura[y])
+                    diccionario_funcion_altura[str(x) + ',' + str(y)] = max(intersecciones[(x, y)][0].altura[x], calle.altura[y])
                 else:
-                    diccionario_funcion_altura[str(x)+','+str(y)] = calle.altura[y]
-        
-
-
+                    diccionario_funcion_altura[str(x) + ',' + str(y)] = calle.altura[y]
 
     return jsonify({
         "particulas": diccionario_particulas,
