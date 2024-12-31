@@ -35,7 +35,8 @@ def run_simulation(calles):
             current_is_start = isStart
             current_mode = mode
             current_velocidad = velocidad
-
+        print(f"Current run_simulation isStart: {current_is_start}")
+        
         if not current_is_start:
             time.sleep(0.1)
             continue
