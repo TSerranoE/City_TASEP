@@ -36,13 +36,13 @@ def run_simulation(calles):
             current_mode = mode
             current_velocidad = velocidad
         print(f"Current run_simulation isStart: {current_is_start}")
-        
+
         if not current_is_start:
             time.sleep(0.1)
             continue
-        
+
         time.sleep(1.3 - current_velocidad)
-        
+
         with lock:
             calles.update_bloqueos()
             if current_mode == 'secuencial':
@@ -63,7 +63,7 @@ def update_data():
     density_init = data['densityInit']
     step = data['step']
     cantidad_inicial = data['cantidad_inicial']
-    
+
     with lock:
         isStart = data['isStart']
         mode = data['mode']
@@ -82,7 +82,7 @@ def update_data():
             for extreme_point in extreme_points:
                 direccion, posicion = extreme_point.split(";")
                 calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
-                
+
                 posicion = density_init
                 for _ in range(cantidad_inicial):
                     se_puede_poner = True
