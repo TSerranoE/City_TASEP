@@ -24,7 +24,7 @@ cantidad_inicial = 100
 simulation_paused = threading.Event()
 simulation_paused.set()
 velocidad = 0.5
-lock = threading.Lock()  # Añadir un Lock para sincronización
+lock = threading.Lock()
 
 def run_simulation(calles):
     global isStart, mode, velocidad
@@ -36,23 +36,18 @@ def run_simulation(calles):
             current_mode = mode
             current_velocidad = velocidad
 
-        
-        print(f"Current isStart: {current_is_start}")  # Log de depuración
-        print(f"Current simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
-        #print(f"Current mode: {current_mode}")  # Log de depuración
-        #print(f"Current velocidad: {current_velocidad}")  # Log de depuración
-
         if not current_is_start:
-            print("Simulation not started yet...")  # Log de depuración
-            time.sleep(0.1)  # Pequeña pausa para no consumir CPU innecesariamente
+            time.sleep(0.1)
             continue
+        
         time.sleep(1.3 - current_velocidad)
-        print("Running simulation step...")  # Log de depuración
-        calles.update_bloqueos()
-        if current_mode == 'secuencial':
-            calles.update_secuencial(0.5)
-        else:
-            calles.update_paralelo(0.5)
+        
+        with lock:
+            calles.update_bloqueos()
+            if current_mode == 'secuencial':
+                calles.update_secuencial(0.5)
+            else:
+                calles.update_paralelo(0.5)
 
 simulation_thread = threading.Thread(target=run_simulation, args=(calles,))
 simulation_thread.start()
@@ -72,47 +67,40 @@ def update_data():
         isStart = data['isStart']
         mode = data['mode']
         velocidad = data['velocidad']
-    
+        print(f"isStart received: {isStart}")
 
-    print(f"isStart received: {isStart}")  # Log de depuración
-    #print(f"step: {step}, cantidad_inicial: {cantidad_inicial}, velocidad: {velocidad}")  # Log de depuración
-    
-    if isStart:
-        simulation_paused.clear()  # Reanudar la simulación
-        #print(f"Simulation resumed: {simulation_paused.is_set()}")  # Log de depuración
-    else:
-        simulation_paused.set()  # Pausar la simulación
-        #print(f"simulation Paused: {simulation_paused.is_set()}") # Log de depuración
+        if isStart:
+            simulation_paused.clear()  # Reanudar la simulación
+        else:
+            simulation_paused.set()  # Pausar la simulación
 
-    if isClear or len(calles.calles) == 0:
-        calles.vaciar_objeto()
-        ultimo_id = 0
-        particulas_agregadas = []
-        for extreme_point in extreme_points:
-            direccion, posicion = extreme_point.split(";")
-            calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
-            # Densidad
-            posicion = density_init
-            for _ in range(cantidad_inicial):
+        if isClear or len(calles.calles) == 0:
+            calles.vaciar_objeto()
+            ultimo_id = 0
+            particulas_agregadas = []
+            for extreme_point in extreme_points:
+                direccion, posicion = extreme_point.split(";")
+                calle = Calle(direccion=int(direccion), intersecciones=[], posicion=int(posicion))
+                
+                posicion = density_init
+                for _ in range(cantidad_inicial):
+                    se_puede_poner = True
+                    for otra_calle in calles.calles:
+                        if otra_calle.posicion == posicion and otra_calle.direccion == 1 - int(direccion):
+                            se_puede_poner = False
 
-                se_puede_poner = True
+                    if se_puede_poner:
+                        particula = Particula(id=ultimo_id, posicion=posicion, calle=calle, bloqueado=True)
+                        calle.insert(0, particula)
+                        particulas_agregadas.append(particula)
+                        ultimo_id += 1
 
-                for otra_calle in calles.calles:
-                    if otra_calle.posicion == posicion and otra_calle.direccion == 1 - int(direccion):
-                        se_puede_poner = False
-
-                if se_puede_poner:
-                    particula = Particula(id=ultimo_id, posicion=posicion, calle=calle, bloqueado=True)
-                    calle.insert(0, particula)
-                    particulas_agregadas.append(particula)
-                    ultimo_id += 1
-
-                posicion -= step
-            calle.iniciar_altura(-size * 2, size * 2)
-            calle.update_bloqueo()
-            calles.add_calle(calle)
+                    posicion -= step
+                calle.iniciar_altura(-size * 2, size * 2)
+                calle.update_bloqueo()
+                calles.add_calle(calle)
+                calles.update_intersecciones()
             calles.update_intersecciones()
-        calles.update_intersecciones()
     return jsonify({"status": "success", "message": "Data received successfully"})
 
 @app.route('/state', methods=['GET'])
@@ -120,7 +108,8 @@ def get_state():
     global isStart
     with lock:
         current_is_start = isStart
-        print(f"Current state isStart: {current_is_start}")  # Log de depuración
+        print(f"Current state isStart: {current_is_start}")
+
     if not current_is_start:
         return jsonify({"status": "paused", "message": "Simulation is paused"})
 
