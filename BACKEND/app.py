@@ -32,8 +32,7 @@ def run_simulation(calles):
             current_is_start = isStart
             current_mode = mode
             current_velocidad = velocidad
-            current_simulation_paused = simulation_paused
-        current_simulation_paused.wait()  # Espera si está en pausa
+        simulation_paused.wait()  # Espera si está en pausa
         
         print(f"isStart: {current_is_start}")  # Log de depuración
         print(f"simulation_paused: {simulation_paused.is_set()}")  # Log de depuración
@@ -60,12 +59,13 @@ def update_data():
     size = data['size']
     with lock:
         isStart = data['isStart']
+        mode = data['mode']
+        step = data['step']
+        cantidad_inicial = data['cantidad_inicial']
+        velocidad = data['velocidad']
     isClear = data['isClear']
-    mode = data['mode']
-    step = data['step']
-    cantidad_inicial = data['cantidad_inicial']
-    velocidad = data['velocidad']
     density_init = data['densityInit']
+
     #print(f"isStart received: {isStart}")  # Log de depuración
     #print(f"step: {step}, cantidad_inicial: {cantidad_inicial}, velocidad: {velocidad}")  # Log de depuración
     with lock:
@@ -110,7 +110,9 @@ def update_data():
 @app.route('/state', methods=['GET'])
 def get_state():
     global isStart
-    if not isStart:
+    with lock:
+        current_is_start = isStart
+    if not current_is_start:
         return jsonify({"status": "paused", "message": "Simulation is paused"})
 
     diccionario_particulas_agregadas = {}
